@@ -87,7 +87,9 @@ export async function getAllGovernorates(): Promise<Governorate[]> {
       return mockDatabase.governorates; // Fallback to mock data
     }
 
-    console.log('✅ Supabase: Loaded', data?.length || 0, 'governorates (cached)');
+    if (import.meta.env.DEV) {
+      console.log('✅ Supabase: Loaded', data?.length || 0, 'governorates (cached)');
+    }
 
     // Transform and cache
     governoratesCache = (data || []).map(row => ({
@@ -143,7 +145,9 @@ export async function getAllPrograms(): Promise<Program[]> {
       return mockDatabase.programs; // Fallback to mock data
     }
 
-    console.log('✅ Supabase: Loaded', data?.length || 0, 'programs (cached)');
+    if (import.meta.env.DEV) {
+      console.log('✅ Supabase: Loaded', data?.length || 0, 'programs (cached)');
+    }
 
     // Cache the result
     programsCache = data || [];
@@ -209,7 +213,9 @@ export async function getFamiliesByProgramAndGovernorate(
       );
     }
 
-    console.log('✅ Supabase: Found', data?.length || 0, 'families for program', programId, 'in', governorateId);
+    if (import.meta.env.DEV) {
+      console.log('✅ Supabase: Found', data?.length || 0, 'families for program', programId, 'in', governorateId);
+    }
 
     return (data || []).map(row => ({
       id: row.id,

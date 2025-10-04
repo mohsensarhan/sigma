@@ -13,7 +13,11 @@ import { selectBeneficiary } from './data/selectionAlgorithm';
 import type { DonationType } from './types/database';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
-const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN || 'pk.eyJ1IjoibW9oc2Vuc2FyaGFuIiwiYSI6ImNtZnliaWFpeTBpdTUyanNieGdydXRjMmUifQ.W14WRrNn17S-bCR6nEK8Yg';
+const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
+
+if (!MAPBOX_TOKEN) {
+  throw new Error('Missing VITE_MAPBOX_TOKEN environment variable. Check .env.local file.');
+}
 
 // Create empty initial state - all waypoints are "powered off"
 const EMPTY_WAYPOINTS: Waypoint[] = [];
