@@ -5,7 +5,7 @@
  * Handles sign up, sign in, sign out, and session persistence.
  */
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '../supabaseClient';
 import { AuthUser, DonorProfile } from '../types/database';
 
@@ -139,7 +139,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     phone?: string
   ): Promise<{ error: string | null }> => {
     try {
-      const { data, error } = await supabase.auth.signUp({
+      const { error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -164,7 +164,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   // Sign in existing user
   const signIn = async (email: string, password: string): Promise<{ error: string | null }> => {
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });

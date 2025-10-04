@@ -8,6 +8,7 @@ import WaypointControlCard from './components/WaypointControlCard';
 import MobileDrawer from './components/MobileDrawer';
 import AdminPanel from './components/AdminPanel';
 import { Register } from './pages/Register';
+import { Login } from './pages/Login';
 import { Waypoint } from './data/waypoints';
 import { useJourneyAnimation } from './hooks/useJourneyAnimation';
 import { generateJourney } from './data/journeyGenerator';
@@ -292,7 +293,8 @@ function DonationTracker() {
   );
 }
 
-// Landing page component
+// Landing page component (saved for future - currently not used)
+/*
 function LandingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-cyan-50 to-green-50 flex items-center justify-center p-4">
@@ -327,8 +329,10 @@ function LandingPage() {
     </div>
   );
 }
+*/
 
-// Loading component
+// Loading component (saved for future - currently not used)
+/*
 function LoadingSpinner() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-cyan-50 to-green-50 flex items-center justify-center">
@@ -339,6 +343,7 @@ function LoadingSpinner() {
     </div>
   );
 }
+*/
 
 // Protected route wrapper (disabled for now)
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -370,7 +375,8 @@ function App() {
       
       {/* Authentication routes */}
       <Route path="/register" element={<Register />} />
-      
+      <Route path="/login" element={<Login />} />
+
       {/* Protected routes */}
       <Route
         path="/track"
