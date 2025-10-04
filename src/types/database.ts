@@ -9,6 +9,32 @@
 // CORE ENTITIES
 // ============================================================================
 
+// ============================================================================
+// DONOR AUTHENTICATION & PROFILES
+// ============================================================================
+
+export interface DonorProfile {
+  id: string; // UUID from auth.users
+  email: string;
+  phone?: string;
+  name?: string;
+  total_donations_amount: number;
+  total_donations_count: number;
+  total_meals_provided: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface AuthUser {
+  id: string;
+  email?: string;
+  phone?: string;
+  user_metadata?: {
+    name?: string;
+    phone?: string;
+  };
+}
+
 export interface Anchor {
   key: string;
   name: string;

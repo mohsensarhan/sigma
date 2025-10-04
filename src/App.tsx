@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Map, { Layer, Source, MapRef } from 'react-map-gl/mapbox';
 import { motion } from 'framer-motion';
 import WaypointMarker from './components/WaypointMarker';
@@ -6,6 +7,7 @@ import DonationInfoPanel from './components/DonationInfoPanel';
 import WaypointControlCard from './components/WaypointControlCard';
 import MobileDrawer from './components/MobileDrawer';
 import AdminPanel from './components/AdminPanel';
+import { Register } from './pages/Register';
 import { Waypoint } from './data/waypoints';
 import { useJourneyAnimation } from './hooks/useJourneyAnimation';
 import { generateJourney } from './data/journeyGenerator';
@@ -22,7 +24,8 @@ if (!MAPBOX_TOKEN) {
 // Create empty initial state - all waypoints are "powered off"
 const EMPTY_WAYPOINTS: Waypoint[] = [];
 
-function App() {
+// Main donation tracking component
+function DonationTracker() {
   const mapRef = useRef<MapRef>(null);
   const [waypoints, setWaypoints] = useState<Waypoint[]>(EMPTY_WAYPOINTS);
   const [activeWaypoint, setActiveWaypoint] = useState<Waypoint | null>(null);
@@ -286,6 +289,101 @@ function App() {
         />
       </motion.div>
     </div>
+  );
+}
+
+// Landing page component
+function LandingPage() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-cyan-50 to-green-50 flex items-center justify-center p-4">
+      <div className="text-center max-w-2xl">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <h1 className="text-6xl font-bold text-gray-900 mb-4">
+            TruPath
+          </h1>
+          <p className="text-xl text-gray-600 mb-8">
+            Egyptian Food Bank Donation Journey Tracker
+          </p>
+          <div className="flex gap-4 justify-center">
+            <button
+              onClick={() => window.location.href = '/register'}
+              className="bg-gradient-to-r from-cyan-500 to-green-500 text-white font-semibold py-3 px-6 rounded-lg hover:from-cyan-600 hover:to-green-600 transition-all duration-200"
+            >
+              Create Account
+            </button>
+            <button
+              onClick={() => window.location.href = '/track'}
+              className="bg-gray-800 text-white font-semibold py-3 px-6 rounded-lg hover:bg-gray-700 transition-all duration-200"
+            >
+              Track Donation
+            </button>
+          </div>
+        </motion.div>
+      </div>
+    </div>
+  );
+}
+
+// Loading component
+function LoadingSpinner() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-cyan-50 to-green-50 flex items-center justify-center">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500"></div>
+        <p className="mt-4 text-gray-600">Loading...</p>
+      </div>
+    </div>
+  );
+}
+
+// Protected route wrapper (disabled for now)
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  // const { user, loading } = useAuth(); // Paused - not needed for main page
+
+  // if (loading) {
+  //   return <LoadingSpinner />;
+  // }
+
+  // if (!user) {
+  //   return <Navigate to="/register" replace />;
+  // }
+
+  return <>{children}</>;
+}
+
+// Main App component with routing
+function App() {
+  // const { loading } = useAuth(); // Paused - not needed for main page
+
+  // if (loading) {
+  //   return <LoadingSpinner />;
+  // }
+
+  return (
+    <Routes>
+      {/* Main donation tracking page (default) */}
+      <Route path="/" element={<DonationTracker />} />
+      
+      {/* Authentication routes */}
+      <Route path="/register" element={<Register />} />
+      
+      {/* Protected routes */}
+      <Route
+        path="/track"
+        element={
+          <ProtectedRoute>
+            <DonationTracker />
+          </ProtectedRoute>
+        }
+      />
+      
+      {/* Fallback - redirect to main page */}
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
 }
 

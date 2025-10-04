@@ -16,8 +16,9 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
-    persistSession: false, // We don't need auth sessions for now
-    autoRefreshToken: false,
+    persistSession: true, // Enable session persistence for donor authentication
+    autoRefreshToken: true, // Auto-refresh tokens for seamless experience
+    detectSessionInUrl: true, // Handle email confirmation links
   },
 });
 
