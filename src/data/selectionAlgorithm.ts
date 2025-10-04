@@ -58,15 +58,17 @@ function uniformRandomSelection<T>(items: T[]): T {
 /**
  * GENERAL DONATION: Randomize ALL (program + governorate + family)
  */
-export function selectForGeneralDonation(): SelectionResult {
+export async function selectForGeneralDonation(): Promise<SelectionResult> {
   // 1. Pick program (weighted random)
-  const program = weightedRandomSelection(getAllPrograms());
+  const allPrograms = await getAllPrograms();
+  const program = weightedRandomSelection(allPrograms);
 
   // 2. Pick governorate (weighted random)
-  const governorate = weightedRandomSelection(getAllGovernorates());
+  const allGovernorates = await getAllGovernorates();
+  const governorate = weightedRandomSelection(allGovernorates);
 
   // 3. Get eligible families (program + governorate intersection)
-  const eligibleFamilies = getFamiliesByProgramAndGovernorate(
+  const eligibleFamilies = await getFamiliesByProgramAndGovernorate(
     program.id,
     governorate.id
   );
@@ -92,20 +94,21 @@ export function selectForGeneralDonation(): SelectionResult {
 /**
  * LOCATION-FIXED DONATION: Lock governorate, randomize program + family
  */
-export function selectForLocationFixedDonation(
+export async function selectForLocationFixedDonation(
   governorateId: string
-): SelectionResult {
+): Promise<SelectionResult> {
   // 1. Get selected governorate
-  const governorate = getGovernorate(governorateId);
+  const governorate = await getGovernorate(governorateId);
   if (!governorate) {
     throw new Error(`Governorate ${governorateId} not found`);
   }
 
   // 2. Pick program (weighted random)
-  const program = weightedRandomSelection(getAllPrograms());
+  const allPrograms = await getAllPrograms();
+  const program = weightedRandomSelection(allPrograms);
 
   // 3. Get eligible families (program + governorate intersection)
-  const eligibleFamilies = getFamiliesByProgramAndGovernorate(
+  const eligibleFamilies = await getFamiliesByProgramAndGovernorate(
     program.id,
     governorate.id
   );
@@ -147,9 +150,9 @@ export function selectForLocationFixedDonation(
 /**
  * PROGRAM-FIXED DONATION: Lock program, randomize governorate + family
  */
-export function selectForProgramFixedDonation(
+export async function selectForProgramFixedDonation(
   programId: string
-): SelectionResult {
+): Promise<SelectionResult> {
   // 1. Get selected program
   const program = getProgram(programId);
   if (!program) {
@@ -157,10 +160,11 @@ export function selectForProgramFixedDonation(
   }
 
   // 2. Pick governorate (weighted random)
-  const governorate = weightedRandomSelection(getAllGovernorates());
+  const allGovernorates = await getAllGovernorates();
+  const governorate = weightedRandomSelection(allGovernorates);
 
   // 3. Get eligible families (program + governorate intersection)
-  const eligibleFamilies = getFamiliesByProgramAndGovernorate(
+  const eligibleFamilies = await getFamiliesByProgramAndGovernorate(
     program.id,
     governorate.id
   );
@@ -179,7 +183,7 @@ export function selectForProgramFixedDonation(
       throw new Error(`Village not found for family ${family.id}`);
     }
 
-    const fallbackGovernorate = getGovernorate(village.governorateId);
+    const fallbackGovernorate = await getGovernorate(village.governorateId);
     if (!fallbackGovernorate) {
       throw new Error(`Governorate ${village.governorateId} not found`);
     }
@@ -202,25 +206,25 @@ export function selectForProgramFixedDonation(
 /**
  * Main selection function - routes to appropriate algorithm
  */
-export function selectBeneficiary(
+export async function selectBeneficiary(
   type: DonationType,
   fixedId?: string
-): SelectionResult {
+): Promise<SelectionResult> {
   switch (type) {
     case 'general':
-      return selectForGeneralDonation();
+      return await selectForGeneralDonation();
 
     case 'location-fixed':
       if (!fixedId) {
         throw new Error('Governorate ID required for location-fixed donation');
       }
-      return selectForLocationFixedDonation(fixedId);
+      return await selectForLocationFixedDonation(fixedId);
 
     case 'program-fixed':
       if (!fixedId) {
         throw new Error('Program ID required for program-fixed donation');
       }
-      return selectForProgramFixedDonation(fixedId);
+      return await selectForProgramFixedDonation(fixedId);
 
     default:
       throw new Error(`Unknown donation type: ${type}`);

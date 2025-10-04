@@ -56,7 +56,7 @@ function App() {
   const handleTriggerDonation = async (type: DonationType, fixedId?: string) => {
     try {
       // Select beneficiary based on donation type
-      const selection = selectBeneficiary(type, fixedId);
+      const selection = await selectBeneficiary(type, fixedId);
 
       // Generate journey waypoints (already in correct format)
       const journeyWaypoints = generateJourney(selection);

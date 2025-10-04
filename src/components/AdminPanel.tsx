@@ -5,11 +5,11 @@
  * Slides out from the left side of the screen.
  */
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight, Dices, MapPin, Package } from 'lucide-react';
 import { getAllGovernorates, getAllPrograms } from '../data/dataService';
-import type { DonationType } from '../types/database';
+import type { DonationType, Governorate, Program } from '../types/database';
 
 interface AdminPanelProps {
   onTriggerDonation: (type: DonationType, fixedId?: string) => void;
@@ -21,9 +21,21 @@ export default function AdminPanel({ onTriggerDonation, onClearSystem, activeDon
   const [isOpen, setIsOpen] = useState(false);
   const [selectedGovernorate, setSelectedGovernorate] = useState('');
   const [selectedProgram, setSelectedProgram] = useState('');
+  const [governorates, setGovernorates] = useState<Governorate[]>([]);
+  const [programs, setPrograms] = useState<Program[]>([]);
 
-  const governorates = getAllGovernorates();
-  const programs = getAllPrograms();
+  // Load governorates and programs from Supabase (or mock data fallback)
+  useEffect(() => {
+    async function loadData() {
+      const [govs, progs] = await Promise.all([
+        getAllGovernorates(),
+        getAllPrograms()
+      ]);
+      setGovernorates(govs);
+      setPrograms(progs);
+    }
+    loadData();
+  }, []);
 
   const handleGeneralDonation = () => {
     onTriggerDonation('general');
