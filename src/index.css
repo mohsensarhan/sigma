@@ -19,6 +19,27 @@ body {
   overflow: hidden;
 }
 
+/* Fix form input text color for authentication pages */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"] {
+  color: #111827 !important;
+  background-color: #ffffff !important;
+}
+
+input[type="text"]::placeholder,
+input[type="email"]::placeholder,
+input[type="password"]::placeholder,
+input[type="tel"]::placeholder {
+  color: #6b7280 !important;
+}
+
+/* Ensure text visibility in light backgrounds */
+.bg-white input {
+  color: #111827 !important;
+}
+
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;

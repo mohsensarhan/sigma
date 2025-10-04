@@ -19,12 +19,20 @@ export function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const { signIn } = useAuth();
+  const { signIn, user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
   // Check if there's a message from registration
   const registrationMessage = location.state?.message;
+
+  // Redirect to home if already authenticated
+  React.useEffect(() => {
+    if (user) {
+      console.log('✅ User already authenticated, redirecting to home');
+      navigate('/', { replace: true });
+    }
+  }, [user, navigate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -55,15 +63,20 @@ export function Login() {
     setError(null);
 
     try {
+      console.log('🔐 Login: Calling signIn...');
       const { error } = await signIn(formData.email, formData.password);
+      console.log('🔐 Login: signIn result:', { error });
 
       if (error) {
+        console.log('❌ Login: Has error, setting error state:', error);
         setError(error);
       } else {
-        // Successful login - redirect to home/dashboard
+        console.log('✅ Login: No error, navigating to home...');
         navigate('/', { replace: true });
+        console.log('✅ Login: navigate() called');
       }
     } catch (err) {
+      console.error('❌ Login: Exception caught:', err);
       setError('An unexpected error occurred. Please try again.');
     } finally {
       setLoading(false);
@@ -72,7 +85,7 @@ export function Login() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-cyan-50 to-green-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full">
+      <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full max-h-[95vh] overflow-y-auto">
         {/* Header */}
         <div className="text-center mb-8">
           <div className="w-16 h-16 bg-gradient-to-r from-cyan-500 to-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -113,7 +126,7 @@ export function Login() {
                 type="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none transition"
+                className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none transition text-gray-900"
                 placeholder="john@example.com"
                 required
                 autoFocus
@@ -136,7 +149,7 @@ export function Login() {
                 type={showPassword ? 'text' : 'password'}
                 value={formData.password}
                 onChange={handleChange}
-                className="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none transition"
+                className="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none transition text-gray-900"
                 placeholder="••••••••"
                 required
               />

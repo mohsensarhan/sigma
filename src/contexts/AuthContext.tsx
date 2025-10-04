@@ -164,17 +164,24 @@ export function AuthProvider({ children }: AuthProviderProps) {
   // Sign in existing user
   const signIn = async (email: string, password: string): Promise<{ error: string | null }> => {
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      console.log('🔐 AuthContext: signInWithPassword called for:', email);
+
+      const result = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-      if (error) {
-        return { error: error.message };
+      console.log('🔐 AuthContext: signInWithPassword complete, result:', result);
+
+      if (result.error) {
+        console.log('❌ AuthContext: Returning error:', result.error.message);
+        return { error: result.error.message };
       }
 
+      console.log('✅ AuthContext: Returning success (no error), user:', result.data?.user?.id);
       return { error: null };
     } catch (error) {
+      console.error('❌ AuthContext: Exception in signIn:', error);
       return { error: 'An unexpected error occurred during sign in.' };
     }
   };
