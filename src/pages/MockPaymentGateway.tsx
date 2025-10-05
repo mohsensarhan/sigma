@@ -28,6 +28,58 @@ export default function MockPaymentGateway() {
   const { registerJourney, addErrorLog } = useGlobalSettings();
   const navigate = useNavigate();
 
+  // Calculate donor stats from all donations in Supabase
+  const calculateDonorStats = async () => {
+    try {
+      console.log('📊 Calculating donor stats from Supabase...');
+      const { data, error } = await supabase
+        .from('donations')
+        .select(
+          `
+          amount,
+          journeys (
+            donor_name,
+            donor_phone
+          )
+        `
+        )
+        .eq('status', 'completed');
+
+      if (error) throw error;
+
+      // Aggregate by donor phone
+      const statsByPhone: Record<string, { total: number; count: number }> = {};
+
+      (data || []).forEach((d) => {
+        const phone = d.journeys?.donor_phone;
+        if (phone) {
+          if (!statsByPhone[phone]) {
+            statsByPhone[phone] = { total: 0, count: 0 };
+          }
+          statsByPhone[phone].total += parseFloat(d.amount);
+          statsByPhone[phone].count += 1;
+        }
+      });
+
+      // Map to donor IDs
+      const statsById: Record<number, { total: number; count: number }> = {};
+      MOCK_DONORS.forEach((donor) => {
+        const stats = statsByPhone[donor.phone];
+        if (stats) {
+          statsById[donor.id] = {
+            total: Math.round(stats.total * 100) / 100, // Round to 2 decimals
+            count: stats.count,
+          };
+        }
+      });
+
+      setDonorStats(statsById);
+      console.log(`✅ Donor stats calculated:`, statsById);
+    } catch (error) {
+      console.error('Failed to calculate donor stats:', error);
+    }
+  };
+
   // Load donation history from Supabase on mount
   useEffect(() => {
     async function loadDonationHistory() {
@@ -61,6 +113,9 @@ export default function MockPaymentGateway() {
         setDonationHistory(formattedHistory);
         console.log(`✅ Loaded ${formattedHistory.length} donations from Supabase`);
         setIsLoadingHistory(false);
+
+        // Load donor stats from all donations
+        await calculateDonorStats();
       } catch (error) {
         console.error('Failed to load donation history:', error);
         setIsLoadingHistory(false);
