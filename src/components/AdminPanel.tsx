@@ -159,7 +159,7 @@ export default function AdminPanel({ onTriggerDonation, onClearSystem, activeDon
                 <div className="mb-6">
                   <motion.button
                     onClick={handleGeneralDonation}
-                    disabled={!!activeDonation}
+                    disabled={false}
                     className="w-full p-4 rounded-xl border text-left transition-all"
                     style={{
                       background: activeDonation
@@ -221,7 +221,7 @@ export default function AdminPanel({ onTriggerDonation, onClearSystem, activeDon
                       value={selectedGovernorate}
                       onChange={(e) => setSelectedGovernorate(e.target.value)}
                       className="w-full px-3 py-2 rounded-lg bg-black/50 border border-cyan-500/30 text-white text-sm mb-3"
-                      disabled={!!activeDonation}
+                      disabled={false}
                     >
                       <option value="">Select Governorate</option>
                       {governorates.map((gov) => (
@@ -233,7 +233,7 @@ export default function AdminPanel({ onTriggerDonation, onClearSystem, activeDon
 
                     <motion.button
                       onClick={handleLocationFixed}
-                      disabled={!!activeDonation || !selectedGovernorate}
+                      disabled={!selectedGovernorate}
                       className="w-full px-4 py-2 rounded-lg text-sm font-semibold transition-all"
                       style={{
                         background:
@@ -280,7 +280,7 @@ export default function AdminPanel({ onTriggerDonation, onClearSystem, activeDon
                       value={selectedProgram}
                       onChange={(e) => setSelectedProgram(e.target.value)}
                       className="w-full px-3 py-2 rounded-lg bg-black/50 border border-orange-500/30 text-white text-sm mb-3"
-                      disabled={!!activeDonation}
+                      disabled={false}
                     >
                       <option value="">Select Program</option>
                       {programs.map((prog) => (
@@ -292,7 +292,7 @@ export default function AdminPanel({ onTriggerDonation, onClearSystem, activeDon
 
                     <motion.button
                       onClick={handleProgramFixed}
-                      disabled={!!activeDonation || !selectedProgram}
+                      disabled={!selectedProgram}
                       className="w-full px-4 py-2 rounded-lg text-sm font-semibold transition-all"
                       style={{
                         background:

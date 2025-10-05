@@ -6,6 +6,7 @@ export interface Waypoint {
   stage: string;
   status: 'pending' | 'active' | 'completed';
   timestamp: string;
+  journeyId?: string; // Add journey ID for multi-journey support
   details: {
     packageId: string;
     items: string[];

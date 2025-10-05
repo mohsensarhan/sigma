@@ -7,10 +7,11 @@ import DonationInfoPanel from './components/DonationInfoPanel';
 import WaypointControlCard from './components/WaypointControlCard';
 import MobileDrawer from './components/MobileDrawer';
 import AdminPanel from './components/AdminPanel';
+import SMSLogsPanel from './components/SMSLogsPanel';
 import { Register } from './pages/Register';
 import { Login } from './pages/Login';
 import { Waypoint } from './data/waypoints';
-import { useJourneyAnimation } from './hooks/useJourneyAnimation';
+import { useJourneyManager } from './hooks/useJourneyManager';
 import { generateJourney } from './data/journeyGenerator';
 import { selectBeneficiary } from './data/selectionAlgorithm';
 import type { DonationType } from './types/database';
@@ -22,43 +23,30 @@ if (!MAPBOX_TOKEN) {
   throw new Error('Missing VITE_MAPBOX_TOKEN environment variable. Check .env.local file.');
 }
 
-// Create empty initial state - all waypoints are "powered off"
-const EMPTY_WAYPOINTS: Waypoint[] = [];
-
-// Main donation tracking component
+// Main donation tracking component with MULTI-JOURNEY support
 function DonationTracker() {
   const mapRef = useRef<MapRef>(null);
-  const [waypoints, setWaypoints] = useState<Waypoint[]>(EMPTY_WAYPOINTS);
   const [activeWaypoint, setActiveWaypoint] = useState<Waypoint | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-  const [activeDonation, setActiveDonation] = useState<{ id: string; stage: number } | null>(null);
 
-  // Connect journey animation hook
-  const { startJourney } = useJourneyAnimation({
-    waypoints,
-    setWaypoints,
-    onStageComplete: (completedStageId, updatedWaypoints) => {
-      // When a stage completes, the NEXT stage becomes active
-      const nextStageId = completedStageId + 1;
-
-      if (nextStageId <= 5) {
-        // Update to show the newly active stage
-        setActiveDonation(prev => prev ? { ...prev, stage: nextStageId } : null);
-        // Use updatedWaypoints from callback to avoid stale closure
-        setActiveWaypoint(updatedWaypoints.find(w => w.id === nextStageId) || null);
-      } else {
-        // Stage 5 completed - keep it visible, don't clear
-        // User must manually click "Clear System & Reset"
-        setActiveDonation(prev => prev ? { ...prev, stage: 5 } : null);
-        setActiveWaypoint(updatedWaypoints.find(w => w.id === 5) || null);
-      }
+  // Multi-journey manager
+  const {
+    state,
+    startJourney,
+    clearAllJourneys,
+    getAllWaypoints
+  } = useJourneyManager({
+    onJourneyStageUpdate: (journeyId, stage) => {
+      console.log(`🚀 Journey ${journeyId} → Stage ${stage}/5`);
     },
-    onJourneyComplete: () => {
-      // Journey complete - but keep everything visible
-      // Only clear when user manually clicks reset button
+    onJourneyComplete: (journeyId) => {
+      console.log(`✅ Journey ${journeyId} COMPLETED`);
     }
   });
+
+  // Get all waypoints from all active journeys
+  const waypoints = getAllWaypoints();
 
   // Handle donation triggers from admin panel
   const handleTriggerDonation = async (type: DonationType, fixedId?: string) => {
@@ -66,32 +54,28 @@ function DonationTracker() {
       // Select beneficiary based on donation type
       const selection = await selectBeneficiary(type, fixedId);
 
-      // Generate journey waypoints (already in correct format)
+      // Generate journey waypoints
       const journeyWaypoints = generateJourney(selection);
+      const journeyId = journeyWaypoints[0].details.packageId;
 
-      // Set active donation
-      setActiveDonation({
-        id: journeyWaypoints[0].details.packageId,
-        stage: 1
-      });
-      setWaypoints(journeyWaypoints);
+      // Start new journey (concurrent with any existing journeys)
+      startJourney(
+        journeyId,
+        journeyWaypoints,
+        type,
+        {
+          governorate: selection.governorate.name,
+          program: selection.program.name,
+          familyId: selection.family.id,
+          familyProfile: selection.family.profile
+        }
+      );
 
-      // Start the journey animation
-      setTimeout(() => {
-        startJourney();
-      }, 500);
-
+      console.log(`🎯 New journey started: ${journeyId}`);
     } catch (error) {
       console.error('Error triggering donation:', error);
       alert('Failed to trigger donation. Please try again.');
     }
-  };
-
-  // Handle clearing/resetting the system
-  const handleClearSystem = () => {
-    setWaypoints(EMPTY_WAYPOINTS);
-    setActiveDonation(null);
-    setActiveWaypoint(null);
   };
 
   useEffect(() => {
@@ -129,57 +113,23 @@ function DonationTracker() {
   const pathGeoJSON = createPathGeoJSON();
 
   const handleWaypointClick = useCallback(
-    (clickedId: number) => {
-      const clickedWaypoint = waypoints.find((w) => w.id === clickedId);
+    (clickedId: number, journeyId?: string) => {
+      const clickedWaypoint = waypoints.find((w) =>
+        w.id === clickedId && (!journeyId || w.journeyId === journeyId)
+      );
       if (!clickedWaypoint) return;
 
-      const currentMaxActive = Math.max(
-        0,
-        ...waypoints.filter((w) => w.status === 'active' || w.status === 'completed').map((w) => w.id)
-      );
-
-      const updatedWaypoints = waypoints.map((w) => {
-        if (w.id < clickedId) {
-          return { ...w, status: 'completed' as const };
-        } else if (w.id === clickedId) {
-          return { ...w, status: 'active' as const };
-        } else if (w.id > clickedId && w.id <= currentMaxActive) {
-          return { ...w, status: 'pending' as const };
-        }
-        return w;
-      });
-
-      setWaypoints(updatedWaypoints);
       setActiveWaypoint(clickedWaypoint);
 
-      const activePoints = updatedWaypoints
-        .filter((w) => w.id <= clickedId)
-        .map((w) => w.coordinates);
-
-      if (activePoints.length > 0 && mapRef.current) {
-        const bounds: [[number, number], [number, number]] = [
-          [
-            Math.min(...activePoints.map((p) => p[0])) - 0.5,
-            Math.min(...activePoints.map((p) => p[1])) - 0.5,
-          ],
-          [
-            Math.max(...activePoints.map((p) => p[0])) + 0.5,
-            Math.max(...activePoints.map((p) => p[1])) + 0.5,
-          ],
-        ];
-
-        const padding = isMobile
-          ? { top: 100, bottom: 200, left: 40, right: 40 }
-          : { top: 100, bottom: 100, left: 450, right: 450 };
-
-        mapRef.current.fitBounds(bounds, {
-          padding,
-          duration: 1500,
-          maxZoom: 8,
+      if (mapRef.current) {
+        mapRef.current.flyTo({
+          center: clickedWaypoint.coordinates,
+          zoom: 10,
+          duration: 1500
         });
       }
     },
-    [waypoints, isMobile]
+    [waypoints]
   );
 
   useEffect(() => {
@@ -247,31 +197,38 @@ function DonationTracker() {
 
         {waypoints.map((waypoint) => (
           <WaypointMarker
-            key={waypoint.id}
+            key={`${waypoint.journeyId}-${waypoint.id}`}
             longitude={waypoint.coordinates[0]}
             latitude={waypoint.coordinates[1]}
             number={waypoint.id}
             status={waypoint.status}
-            onClick={() => handleWaypointClick(waypoint.id)}
+            onClick={() => handleWaypointClick(waypoint.id, waypoint.journeyId)}
           />
         ))}
       </Map>
 
       <DonationInfoPanel waypoint={activeWaypoint} />
 
-      <WaypointControlCard waypoints={waypoints} onWaypointClick={handleWaypointClick} />
+      <WaypointControlCard waypoints={waypoints} onWaypointClick={(id) => handleWaypointClick(id)} />
 
       <MobileDrawer
         waypoints={waypoints}
-        onWaypointClick={handleWaypointClick}
+        onWaypointClick={(id) => handleWaypointClick(id)}
         isOpen={isDrawerOpen}
         onToggle={() => setIsDrawerOpen(!isDrawerOpen)}
       />
 
       <AdminPanel
         onTriggerDonation={handleTriggerDonation}
-        onClearSystem={handleClearSystem}
-        activeDonation={activeDonation}
+        onClearSystem={clearAllJourneys}
+        activeDonation={
+          state.journeys.length > 0
+            ? {
+                id: `${state.activeCount} active, ${state.completedCount} completed`,
+                stage: state.journeys[0]?.currentStage || 0
+              }
+            : null
+        }
       />
 
       <motion.div
@@ -289,105 +246,42 @@ function DonationTracker() {
           }}
         />
       </motion.div>
-    </div>
-  );
-}
 
-// Landing page component (saved for future - currently not used)
-/*
-function LandingPage() {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-cyan-50 to-green-50 flex items-center justify-center p-4">
-      <div className="text-center max-w-2xl">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <h1 className="text-6xl font-bold text-gray-900 mb-4">
-            TruPath
-          </h1>
-          <p className="text-xl text-gray-600 mb-8">
-            Egyptian Food Bank Donation Journey Tracker
-          </p>
-          <div className="flex gap-4 justify-center">
-            <button
-              onClick={() => window.location.href = '/register'}
-              className="bg-gradient-to-r from-cyan-500 to-green-500 text-white font-semibold py-3 px-6 rounded-lg hover:from-cyan-600 hover:to-green-600 transition-all duration-200"
-            >
-              Create Account
-            </button>
-            <button
-              onClick={() => window.location.href = '/track'}
-              className="bg-gray-800 text-white font-semibold py-3 px-6 rounded-lg hover:bg-gray-700 transition-all duration-200"
-            >
-              Track Donation
-            </button>
+      {/* Multi-Journey Status HUD */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="fixed top-6 right-6 z-10 bg-black/60 backdrop-blur-md px-6 py-3 rounded-2xl border border-cyan-500/30"
+      >
+        <div className="flex items-center gap-4 text-sm">
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse" />
+            <span className="text-green-400 font-semibold">{state.activeCount} Active</span>
           </div>
-        </motion.div>
-      </div>
+          <div className="w-px h-4 bg-cyan-500/30" />
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-cyan-500" />
+            <span className="text-cyan-400">{state.completedCount} Completed</span>
+          </div>
+          <div className="w-px h-4 bg-cyan-500/30" />
+          <div className="text-white/70">
+            Total: <span className="text-white font-semibold">{state.totalCount}</span>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* SMS Logs Panel */}
+      <SMSLogsPanel />
     </div>
   );
 }
-*/
 
-// Loading component (saved for future - currently not used)
-/*
-function LoadingSpinner() {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-cyan-50 to-green-50 flex items-center justify-center">
-      <div className="text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500"></div>
-        <p className="mt-4 text-gray-600">Loading...</p>
-      </div>
-    </div>
-  );
-}
-*/
-
-// Protected route wrapper (disabled for now)
-function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  // const { user, loading } = useAuth(); // Paused - not needed for main page
-
-  // if (loading) {
-  //   return <LoadingSpinner />;
-  // }
-
-  // if (!user) {
-  //   return <Navigate to="/register" replace />;
-  // }
-
-  return <>{children}</>;
-}
-
-// Main App component with routing
 function App() {
-  // const { loading } = useAuth(); // Paused - not needed for main page
-
-  // if (loading) {
-  //   return <LoadingSpinner />;
-  // }
-
   return (
     <Routes>
-      {/* Main donation tracking page (default) */}
       <Route path="/" element={<DonationTracker />} />
-      
-      {/* Authentication routes */}
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
-
-      {/* Protected routes */}
-      <Route
-        path="/track"
-        element={
-          <ProtectedRoute>
-            <DonationTracker />
-          </ProtectedRoute>
-        }
-      />
-      
-      {/* Fallback - redirect to main page */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

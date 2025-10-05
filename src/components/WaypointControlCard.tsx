@@ -34,7 +34,7 @@ export default function WaypointControlCard({ waypoints, onWaypointClick }: Wayp
 
               return (
                 <motion.div
-                  key={waypoint.id}
+                  key={`${waypoint.journeyId || 'default'}-${waypoint.id}`}
                   initial={{ opacity: 0, x: 50 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.1 }}

@@ -107,7 +107,7 @@ export default function MobileDrawer({ waypoints, onWaypointClick, isOpen, onTog
 
               return (
                 <motion.button
-                  key={waypoint.id}
+                  key={`${waypoint.journeyId || 'default'}-${waypoint.id}`}
                   onClick={() => {
                     onWaypointClick(waypoint.id);
                     onToggle();
