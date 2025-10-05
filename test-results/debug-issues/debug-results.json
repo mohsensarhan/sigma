@@ -1,0 +1,9 @@
+{
+  "donations": [],
+  "smsMessages": [],
+  "journeyViewerTests": [],
+  "errors": [
+    "No journey ID found in SMS messages"
+  ],
+  "consoleLogs": []
+}

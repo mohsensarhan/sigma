@@ -10,8 +10,14 @@ import AdminPanel from './components/AdminPanel';
 import SMSLogsPanel from './components/SMSLogsPanel';
 import { Register } from './pages/Register';
 import { Login } from './pages/Login';
+import AdminDashboard from './pages/AdminDashboard';
+import MockPaymentGateway from './pages/MockPaymentGateway';
+import MockSMSInbox from './pages/MockSMSInbox';
+import JourneyViewer from './pages/JourneyViewer';
+import { useGlobalSettings } from './contexts/GlobalSettingsContext';
 import { Waypoint } from './data/waypoints';
 import { useJourneyManager } from './hooks/useJourneyManager';
+import { useGlobalJourneyProgression } from './hooks/useGlobalJourneyProgression';
 import { generateJourney } from './data/journeyGenerator';
 import { selectBeneficiary } from './data/selectionAlgorithm';
 import type { DonationType } from './types/database';
@@ -30,23 +36,45 @@ function DonationTracker() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
-  // Multi-journey manager
+  // Get journeys from global context (registered from payment gateway)
+  const { getAllActiveJourneys, getAllCompletedJourneys, updateJourney } = useGlobalSettings();
+  const globalJourneys = [...getAllActiveJourneys(), ...getAllCompletedJourneys()];
+
+  // Debug logging
+  useEffect(() => {
+    const activeCount = getAllActiveJourneys().length;
+    const completedCount = getAllCompletedJourneys().length;
+    console.log(`📊 DonationTracker: ${activeCount} active, ${completedCount} completed global journeys`);
+  }, [getAllActiveJourneys, getAllCompletedJourneys]);
+
+  // Multi-journey manager (for admin panel triggers only)
   const {
     state,
     startJourney,
     clearAllJourneys,
-    getAllWaypoints
+    getAllWaypoints: getLocalWaypoints
   } = useJourneyManager({
     onJourneyStageUpdate: (journeyId, stage) => {
       console.log(`🚀 Journey ${journeyId} → Stage ${stage}/5`);
+      // Sync with global context
+      const journey = state.journeys.find(j => j.id === journeyId);
+      if (journey) {
+        updateJourney(journeyId, { currentStage: stage });
+      }
     },
     onJourneyComplete: (journeyId) => {
       console.log(`✅ Journey ${journeyId} COMPLETED`);
+      // Sync with global context
+      updateJourney(journeyId, { status: 'completed', completedAt: Date.now() });
     }
   });
 
-  // Get all waypoints from all active journeys
-  const waypoints = getAllWaypoints();
+  // Merge waypoints from both local journeys and global journeys
+  const localWaypoints = getLocalWaypoints();
+  const globalWaypoints = globalJourneys.flatMap(journey =>
+    journey.waypoints.map(w => ({ ...w, journeyId: journey.id }))
+  );
+  const waypoints = [...localWaypoints, ...globalWaypoints];
 
   // Handle donation triggers from admin panel
   const handleTriggerDonation = async (type: DonationType, fixedId?: string) => {
@@ -256,16 +284,22 @@ function DonationTracker() {
         <div className="flex items-center gap-4 text-sm">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse" />
-            <span className="text-green-400 font-semibold">{state.activeCount} Active</span>
+            <span className="text-green-400 font-semibold">
+              {state.activeCount + getAllActiveJourneys().length} Active
+            </span>
           </div>
           <div className="w-px h-4 bg-cyan-500/30" />
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-cyan-500" />
-            <span className="text-cyan-400">{state.completedCount} Completed</span>
+            <span className="text-cyan-400">
+              {state.completedCount + getAllCompletedJourneys().length} Completed
+            </span>
           </div>
           <div className="w-px h-4 bg-cyan-500/30" />
           <div className="text-white/70">
-            Total: <span className="text-white font-semibold">{state.totalCount}</span>
+            Total: <span className="text-white font-semibold">
+              {state.totalCount + getAllActiveJourneys().length + getAllCompletedJourneys().length}
+            </span>
           </div>
         </div>
       </motion.div>
@@ -276,14 +310,27 @@ function DonationTracker() {
   );
 }
 
+// Journey Progression Manager - runs on all pages
+function JourneyProgressionManager() {
+  useGlobalJourneyProgression();
+  return null;
+}
+
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<DonationTracker />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+    <>
+      <JourneyProgressionManager />
+      <Routes>
+        <Route path="/" element={<DonationTracker />} />
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/donors" element={<MockPaymentGateway />} />
+        <Route path="/sms" element={<MockSMSInbox />} />
+        <Route path="/journey/:trackingId" element={<JourneyViewer />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </>
   );
 }
 

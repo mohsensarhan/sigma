@@ -8,8 +8,7 @@ import { Journey, JourneyManagerState } from '../types/journey';
 import { Waypoint } from '../data/waypoints';
 import { sendJourneyNotification } from '../services/mockSMS';
 import { mockAPIGateway } from '../services/mockAWSLambda';
-
-const STAGE_DURATION_MS = 5000; // 5 seconds per stage
+import { useGlobalSettings } from '../contexts/GlobalSettingsContext';
 
 interface UseJourneyManagerProps {
   onJourneyStageUpdate?: (journeyId: string, stage: number) => void;
@@ -20,6 +19,7 @@ export function useJourneyManager({
   onJourneyStageUpdate,
   onJourneyComplete
 }: UseJourneyManagerProps = {}) {
+  const { settings } = useGlobalSettings();
   const [state, setState] = useState<JourneyManagerState>({
     journeys: [],
     activeCount: 0,
@@ -158,12 +158,12 @@ export function useJourneyManager({
           )
         };
       });
-    }, STAGE_DURATION_MS);
+    }, settings.stepDuration);
 
     intervalsRef.current.set(journeyId, interval);
 
     return journeyId;
-  }, [onJourneyStageUpdate, onJourneyComplete]);
+  }, [onJourneyStageUpdate, onJourneyComplete, settings.stepDuration]);
 
   // Stop/pause a journey
   const pauseJourney = useCallback((journeyId: string) => {

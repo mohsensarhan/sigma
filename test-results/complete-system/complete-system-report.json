@@ -1,0 +1,98 @@
+{
+  "timestamp": "2025-10-05T12:13:02.634Z",
+  "testDuration": "Approximately 45 seconds",
+  "summary": {
+    "totalTests": 8,
+    "pagesTested": 5,
+    "screenshotsTaken": 11,
+    "errorsFound": 0
+  },
+  "results": {
+    "pages": {
+      "admin": true,
+      "donors": true,
+      "main": true,
+      "sms": true,
+      "journey": true
+    },
+    "scrolling": {
+      "admin": false,
+      "donors": false,
+      "main": false,
+      "sms": false,
+      "journey": false
+    },
+    "functionality": {
+      "stepDurationSet": true,
+      "donationTriggered": true,
+      "trackingIdGenerated": true,
+      "journeyProgressed": true,
+      "smsMessagesFound": true,
+      "journeyViewerOpened": true,
+      "adminStatsUpdated": false
+    }
+  },
+  "data": {
+    "trackingId": "EFB-2025-1759666344601-1176",
+    "journeyStages": [
+      {
+        "stage": 1,
+        "screenshot": "08-journey-stage-1.png",
+        "active": "0 Active",
+        "completed": "0",
+        "stageElement": false
+      },
+      {
+        "stage": 2,
+        "screenshot": "08-journey-stage-2.png",
+        "active": "0 Active",
+        "completed": "0",
+        "stageElement": false
+      },
+      {
+        "stage": 3,
+        "screenshot": "08-journey-stage-3.png",
+        "active": "0 Active",
+        "completed": "0",
+        "stageElement": false
+      },
+      {
+        "stage": 4,
+        "screenshot": "08-journey-stage-4.png",
+        "active": "0 Active",
+        "completed": "0",
+        "stageElement": false
+      },
+      {
+        "stage": 5,
+        "screenshot": "08-journey-stage-5.png",
+        "active": "0 Active",
+        "completed": "0",
+        "stageElement": false
+      }
+    ],
+    "finalStats": {
+      "active": "0",
+      "completed": "0",
+      "total": "0",
+      "totalLogs": 0,
+      "infoLogs": 0
+    }
+  },
+  "screenshots": [
+    "test-results\\complete-system\\01-admin-initial.png",
+    "test-results\\complete-system\\04-payment-gateway-initial.png",
+    "test-results\\complete-system\\07-main-map-initial.png",
+    "test-results\\complete-system\\08-journey-stage-1.png",
+    "test-results\\complete-system\\08-journey-stage-2.png",
+    "test-results\\complete-system\\08-journey-stage-3.png",
+    "test-results\\complete-system\\08-journey-stage-4.png",
+    "test-results\\complete-system\\08-journey-stage-5.png",
+    "test-results\\complete-system\\09-sms-inbox-initial.png",
+    "test-results\\complete-system\\11-journey-viewer-opened.png",
+    "test-results\\complete-system\\13-admin-final-stats.png"
+  ],
+  "errors": [],
+  "consoleLogs": 48,
+  "status": "PASSED"
+}

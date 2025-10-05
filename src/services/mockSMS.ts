@@ -15,9 +15,20 @@ export interface SMSMessage {
   stage?: number;
 }
 
-// Mock SMS database
-const smsMessages: SMSMessage[] = [];
-let messageCounter = 1;
+// Mock SMS database - use localStorage for persistence
+const getStoredMessages = (): SMSMessage[] => {
+  if (typeof window === 'undefined') return [];
+  const stored = localStorage.getItem('mockSMSMessages');
+  return stored ? JSON.parse(stored) : [];
+};
+
+const setStoredMessages = (messages: SMSMessage[]): void => {
+  if (typeof window === 'undefined') return;
+  localStorage.setItem('mockSMSMessages', JSON.stringify(messages));
+};
+
+let smsMessages: SMSMessage[] = getStoredMessages();
+let messageCounter = parseInt(localStorage.getItem('mockSMSCounter') || '1');
 
 /**
  * Send SMS notification
@@ -39,18 +50,22 @@ export async function sendSMS(
 
   // Simulate immediate queuing
   smsMessages.push(message);
+  setStoredMessages(smsMessages);
+  localStorage.setItem('mockSMSCounter', messageCounter.toString());
 
   console.log(`[SMS] Queued to ${to}: "${body.substring(0, 50)}..."`);
 
   // Simulate async delivery (500ms delay)
   setTimeout(() => {
     message.status = 'sent';
+    setStoredMessages(smsMessages);
     console.log(`[SMS] Sent to ${to}`);
 
     // Simulate delivery confirmation (1s delay)
     setTimeout(() => {
       message.status = 'delivered';
       message.deliveredAt = Date.now();
+      setStoredMessages(smsMessages);
       console.log(`[SMS] Delivered to ${to}`);
     }, 500);
   }, 500);
@@ -71,12 +86,20 @@ export async function sendJourneyNotification(
     beneficiaries?: number;
   }
 ): Promise<SMSMessage> {
+  // Get origin safely for both browser and test environments
+  const getOrigin = () => {
+    if (typeof window !== 'undefined' && window.location) {
+      return window.location.origin;
+    }
+    return 'http://localhost:5173'; // Default for testing
+  };
+  
   const stageMessages: Record<number, (details: any) => string> = {
-    1: (d) => `✅ Your donation ${d.packageId} has been received at EFB HQ, New Cairo. Track: https://trupath.eg/${journeyId}`,
-    2: (d) => `📦 Your donation ${d.packageId} is being processed at Badr Warehouse. Track: https://trupath.eg/${journeyId}`,
-    3: (d) => `🚚 Your donation ${d.packageId} has reached ${d.location} Strategic Reserve. Track: https://trupath.eg/${journeyId}`,
-    4: (d) => `📍 Your donation ${d.packageId} arrived at ${d.location} Touchpoint. Track: https://trupath.eg/${journeyId}`,
-    5: (d) => `🎉 Your donation ${d.packageId} has been delivered to ${d.beneficiaries || 'families'} in ${d.location}! Thank you for making a difference. Track: https://trupath.eg/${journeyId}`
+    1: (d) => `✅ Your donation ${d.packageId} has been received at EFB HQ, New Cairo. Track: ${getOrigin()}/journey/${journeyId}`,
+    2: (d) => `📦 Your donation ${d.packageId} is being processed at Badr Warehouse. Track: ${getOrigin()}/journey/${journeyId}`,
+    3: (d) => `🚚 Your donation ${d.packageId} has reached ${d.location} Strategic Reserve. Track: ${getOrigin()}/journey/${journeyId}`,
+    4: (d) => `📍 Your donation ${d.packageId} arrived at ${d.location} Touchpoint. Track: ${getOrigin()}/journey/${journeyId}`,
+    5: (d) => `🎉 Your donation ${d.packageId} has been delivered to ${d.beneficiaries || 'families'} in ${d.location}! Thank you for making a difference. Track: ${getOrigin()}/journey/${journeyId}`
   };
 
   const messageBody = stageMessages[stage]?.(details) || `Update for donation ${details.packageId}`;
@@ -141,6 +164,8 @@ export function getSMSStats() {
  * Get all SMS messages (for debugging)
  */
 export function getAllSMS(): SMSMessage[] {
+  // Refresh from localStorage to get latest messages
+  smsMessages = getStoredMessages();
   return [...smsMessages].sort((a, b) => b.timestamp - a.timestamp);
 }
 
@@ -148,8 +173,10 @@ export function getAllSMS(): SMSMessage[] {
  * Clear all SMS (for testing)
  */
 export function clearAllSMS() {
-  smsMessages.length = 0;
+  smsMessages = [];
   messageCounter = 1;
+  setStoredMessages(smsMessages);
+  localStorage.setItem('mockSMSCounter', '1');
   console.log('[SMS] All messages cleared');
 }
 
@@ -160,6 +187,7 @@ export function simulateSMSFailure(messageId: string, reason: string = 'Network 
   const message = smsMessages.find(msg => msg.id === messageId);
   if (message) {
     message.status = 'failed';
+    setStoredMessages(smsMessages);
     console.log(`[SMS] Failed: ${messageId} - ${reason}`);
   }
 }

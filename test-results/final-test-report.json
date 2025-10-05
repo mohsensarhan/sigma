@@ -1,0 +1,16 @@
+{
+  "timestamp": "2025-10-05T08:11:29.024Z",
+  "totalDonations": 0,
+  "smsStats": {
+    "queued": 5,
+    "sent": 5,
+    "delivered": 4
+  },
+  "apiStats": {
+    "createJourney": 5,
+    "updateStage": 0
+  },
+  "screenshots": 7,
+  "consoleLogs": 212,
+  "status": "PASSED"
+}

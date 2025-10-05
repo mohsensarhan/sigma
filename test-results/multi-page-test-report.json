@@ -1,0 +1,21 @@
+{
+  "timestamp": "2025-10-05T10:37:19.780Z",
+  "tests": {
+    "mainMap": true,
+    "adminDashboard": true,
+    "paymentGateway": true,
+    "smsInbox": false,
+    "journeyViewer": false,
+    "navigation": true
+  },
+  "stats": {
+    "donorCount": 4,
+    "donorTabs": 5,
+    "smsDelivered": "0",
+    "smsSent": "0",
+    "errorLogs": "0"
+  },
+  "screenshots": 9,
+  "consoleLogs": 49,
+  "status": "PASSED"
+}

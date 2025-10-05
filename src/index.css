@@ -16,7 +16,14 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background: #000;
   color: #fff;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Scrollable page class for pages that need scrolling */
+.scrollable-page {
+  overflow-y: auto;
+  height: 100vh;
 }
 
 /* Fix form input text color for authentication pages */

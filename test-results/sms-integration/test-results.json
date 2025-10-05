@@ -1,0 +1,30 @@
+{
+  "startTime": "2025-10-05T12:03:19.208Z",
+  "steps": [
+    {
+      "step": 1,
+      "status": "success",
+      "message": "Navigated to payment gateway"
+    },
+    {
+      "step": 2,
+      "status": "success",
+      "message": "Donation triggered successfully"
+    },
+    {
+      "step": 3,
+      "status": "success",
+      "message": "Navigated to SMS inbox"
+    },
+    {
+      "step": 4,
+      "status": "success",
+      "message": "Found 1 SMS messages"
+    }
+  ],
+  "screenshots": [],
+  "success": false,
+  "error": "No journey links found in SMS messages",
+  "endTime": "2025-10-05T12:03:29.323Z",
+  "duration": 10115
+}

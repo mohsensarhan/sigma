@@ -18,6 +18,9 @@ export interface Journey {
     program?: string;
     familyId?: string;
     familyProfile?: string;
+    donorName?: string;
+    donorPhone?: string;
+    amount?: number;
   };
 }
 
