@@ -7,7 +7,10 @@ interface WaypointControlCardProps {
   onWaypointClick: (id: number) => void;
 }
 
-export default function WaypointControlCard({ waypoints, onWaypointClick }: WaypointControlCardProps) {
+export default function WaypointControlCard({
+  waypoints,
+  onWaypointClick,
+}: WaypointControlCardProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 50 }}
@@ -46,13 +49,13 @@ export default function WaypointControlCard({ waypoints, onWaypointClick }: Wayp
                       background: isActive
                         ? 'rgba(0, 217, 255, 0.1)'
                         : isCompleted
-                        ? 'rgba(0, 255, 159, 0.05)'
-                        : 'rgba(26, 26, 26, 0.5)',
+                          ? 'rgba(0, 255, 159, 0.05)'
+                          : 'rgba(26, 26, 26, 0.5)',
                       borderColor: isActive
                         ? 'rgba(0, 217, 255, 0.5)'
                         : isCompleted
-                        ? 'rgba(0, 255, 159, 0.3)'
-                        : 'rgba(51, 51, 51, 0.3)',
+                          ? 'rgba(0, 255, 159, 0.3)'
+                          : 'rgba(51, 51, 51, 0.3)',
                     }}
                     whileHover={{
                       scale: 1.02,
@@ -70,13 +73,9 @@ export default function WaypointControlCard({ waypoints, onWaypointClick }: Wayp
                             backgroundColor: isCompleted
                               ? '#00ff9f'
                               : isActive
-                              ? '#00d9ff'
-                              : '#1a1a1a',
-                            borderColor: isCompleted
-                              ? '#00ff9f'
-                              : isActive
-                              ? '#00d9ff'
-                              : '#333',
+                                ? '#00d9ff'
+                                : '#1a1a1a',
+                            borderColor: isCompleted ? '#00ff9f' : isActive ? '#00d9ff' : '#333',
                             color: isCompleted || isActive ? '#000' : '#666',
                           }}
                           animate={

@@ -5,10 +5,7 @@
  * All logic is deterministic and testable.
  */
 
-import type {
-  SelectionResult,
-  DonationType,
-} from '../types/database';
+import type { SelectionResult, DonationType } from '../types/database';
 import {
   getAllPrograms,
   getAllGovernorates,
@@ -68,22 +65,17 @@ export async function selectForGeneralDonation(): Promise<SelectionResult> {
   const governorate = weightedRandomSelection(allGovernorates);
 
   // 3. Get eligible families (program + governorate intersection)
-  const eligibleFamilies = await getFamiliesByProgramAndGovernorate(
-    program.id,
-    governorate.id
-  );
+  const eligibleFamilies = await getFamiliesByProgramAndGovernorate(program.id, governorate.id);
 
   if (eligibleFamilies.length === 0) {
-    throw new Error(
-      `No families found for program ${program.name} in ${governorate.name}`
-    );
+    throw new Error(`No families found for program ${program.name} in ${governorate.name}`);
   }
 
   // 4. Pick family (uniform random)
   const family = uniformRandomSelection(eligibleFamilies);
 
   // 5. Get village
-  const village = getVillage(family.villageId);
+  const village = await getVillage(family.villageId);
   if (!village) {
     throw new Error(`Village not found for family ${family.id}`);
   }
@@ -108,26 +100,23 @@ export async function selectForLocationFixedDonation(
   const program = weightedRandomSelection(allPrograms);
 
   // 3. Get eligible families (program + governorate intersection)
-  const eligibleFamilies = await getFamiliesByProgramAndGovernorate(
-    program.id,
-    governorate.id
-  );
+  const eligibleFamilies = await getFamiliesByProgramAndGovernorate(program.id, governorate.id);
 
   if (eligibleFamilies.length === 0) {
     // Fallback: try different program
-    const allFamiliesInGovernorate = getFamiliesByGovernorate(governorate.id);
+    const allFamiliesInGovernorate = await getFamiliesByGovernorate(governorate.id);
     if (allFamiliesInGovernorate.length === 0) {
       throw new Error(`No families found in ${governorate.name}`);
     }
 
     // Pick any family and use its program
     const family = uniformRandomSelection(allFamiliesInGovernorate);
-    const fallbackProgram = getProgram(family.programId);
+    const fallbackProgram = await getProgram(family.programId);
     if (!fallbackProgram) {
       throw new Error(`Program ${family.programId} not found`);
     }
 
-    const village = getVillage(family.villageId);
+    const village = await getVillage(family.villageId);
     if (!village) {
       throw new Error(`Village not found for family ${family.id}`);
     }
@@ -139,7 +128,7 @@ export async function selectForLocationFixedDonation(
   const family = uniformRandomSelection(eligibleFamilies);
 
   // 5. Get village
-  const village = getVillage(family.villageId);
+  const village = await getVillage(family.villageId);
   if (!village) {
     throw new Error(`Village not found for family ${family.id}`);
   }
@@ -150,11 +139,9 @@ export async function selectForLocationFixedDonation(
 /**
  * PROGRAM-FIXED DONATION: Lock program, randomize governorate + family
  */
-export async function selectForProgramFixedDonation(
-  programId: string
-): Promise<SelectionResult> {
+export async function selectForProgramFixedDonation(programId: string): Promise<SelectionResult> {
   // 1. Get selected program
-  const program = getProgram(programId);
+  const program = await getProgram(programId);
   if (!program) {
     throw new Error(`Program ${programId} not found`);
   }
@@ -164,21 +151,18 @@ export async function selectForProgramFixedDonation(
   const governorate = weightedRandomSelection(allGovernorates);
 
   // 3. Get eligible families (program + governorate intersection)
-  const eligibleFamilies = await getFamiliesByProgramAndGovernorate(
-    program.id,
-    governorate.id
-  );
+  const eligibleFamilies = await getFamiliesByProgramAndGovernorate(program.id, governorate.id);
 
   if (eligibleFamilies.length === 0) {
     // Fallback: try different governorate
-    const allFamiliesInProgram = getFamiliesByProgram(program.id);
+    const allFamiliesInProgram = await getFamiliesByProgram(program.id);
     if (allFamiliesInProgram.length === 0) {
       throw new Error(`No families found for program ${program.name}`);
     }
 
     // Pick any family and use its governorate
     const family = uniformRandomSelection(allFamiliesInProgram);
-    const village = getVillage(family.villageId);
+    const village = await getVillage(family.villageId);
     if (!village) {
       throw new Error(`Village not found for family ${family.id}`);
     }
@@ -195,7 +179,7 @@ export async function selectForProgramFixedDonation(
   const family = uniformRandomSelection(eligibleFamilies);
 
   // 5. Get village
-  const village = getVillage(family.villageId);
+  const village = await getVillage(family.villageId);
   if (!village) {
     throw new Error(`Village not found for family ${family.id}`);
   }

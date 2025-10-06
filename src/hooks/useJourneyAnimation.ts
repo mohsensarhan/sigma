@@ -117,7 +117,7 @@ export function useJourneyAnimation({
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [waypoints.length, waypoints.find(w => w.status === 'active') ? 'has-active' : 'no-active']); // Only re-run when journey starts/stops
+  }, [waypoints.length, waypoints.find((w) => w.status === 'active') ? 'has-active' : 'no-active']); // Only re-run when journey starts/stops
 
   // Function to manually start a journey
   const startJourney = () => {

@@ -16,7 +16,7 @@ export function Register() {
     password: '',
     confirmPassword: '',
     name: '',
-    phone: ''
+    phone: '',
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -29,28 +29,28 @@ export function Register() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
     // Clear error when user starts typing
-    if (error) setError(null);
+    if (error) {setError(null);}
   };
 
   const validateForm = () => {
-    if (!formData.email) return 'Email is required';
-    if (!formData.password) return 'Password is required';
-    if (formData.password.length < 6) return 'Password must be at least 6 characters';
-    if (formData.password !== formData.confirmPassword) return 'Passwords do not match';
-    if (!formData.name) return 'Name is required';
-    if (!formData.phone) return 'Phone number is required';
-    if (!/^\+?[\d\s-()]+$/.test(formData.phone)) return 'Invalid phone number format';
+    if (!formData.email) {return 'Email is required';}
+    if (!formData.password) {return 'Password is required';}
+    if (formData.password.length < 6) {return 'Password must be at least 6 characters';}
+    if (formData.password !== formData.confirmPassword) {return 'Passwords do not match';}
+    if (!formData.name) {return 'Name is required';}
+    if (!formData.phone) {return 'Phone number is required';}
+    if (!/^\+?[\d\s-()]+$/.test(formData.phone)) {return 'Invalid phone number format';}
     return null;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     const validationError = validateForm();
     if (validationError) {
       setError(validationError);
@@ -74,10 +74,10 @@ export function Register() {
         setSuccess(true);
         // Redirect to login after 3 seconds
         setTimeout(() => {
-          navigate('/login', { 
-            state: { 
-              message: 'Registration successful! Please check your email to confirm your account.' 
-            } 
+          navigate('/login', {
+            state: {
+              message: 'Registration successful! Please check your email to confirm your account.',
+            },
           });
         }, 3000);
       }
@@ -97,10 +97,14 @@ export function Register() {
           </div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Registration Successful!</h2>
           <p className="text-gray-600 mb-4">
-            Please check your email to confirm your account. You'll be redirected to the login page shortly.
+            Please check your email to confirm your account. You'll be redirected to the login page
+            shortly.
           </p>
           <div className="w-full bg-gray-200 rounded-full h-2">
-            <div className="bg-green-600 h-2 rounded-full animate-pulse" style={{ width: '100%' }}></div>
+            <div
+              className="bg-green-600 h-2 rounded-full animate-pulse"
+              style={{ width: '100%' }}
+            ></div>
           </div>
         </div>
       </div>
@@ -229,14 +233,15 @@ export function Register() {
                 )}
               </button>
             </div>
-            <p className="mt-1 text-xs text-gray-500">
-              Minimum 6 characters
-            </p>
+            <p className="mt-1 text-xs text-gray-500">Minimum 6 characters</p>
           </div>
 
           {/* Confirm Password Field */}
           <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
+            <label
+              htmlFor="confirmPassword"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
               Confirm Password
             </label>
             <div className="relative">
@@ -289,7 +294,10 @@ export function Register() {
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-600">
             Already have an account?{' '}
-            <Link to="/login" className="font-medium text-cyan-600 hover:text-cyan-500 transition-colors">
+            <Link
+              to="/login"
+              className="font-medium text-cyan-600 hover:text-cyan-500 transition-colors"
+            >
               Sign in
             </Link>
           </p>

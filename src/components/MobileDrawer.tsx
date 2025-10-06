@@ -11,7 +11,12 @@ interface MobileDrawerProps {
   onToggle: () => void;
 }
 
-export default function MobileDrawer({ waypoints, onWaypointClick, isOpen, onToggle }: MobileDrawerProps) {
+export default function MobileDrawer({
+  waypoints,
+  onWaypointClick,
+  isOpen,
+  onToggle,
+}: MobileDrawerProps) {
   const controls = useAnimation();
 
   useEffect(() => {
@@ -25,9 +30,9 @@ export default function MobileDrawer({ waypoints, onWaypointClick, isOpen, onTog
     ({ last, velocity: [, vy], movement: [, my] }) => {
       if (last) {
         if (my > 100 || vy > 0.5) {
-          if (isOpen) onToggle();
+          if (isOpen) {onToggle();}
         } else if (my < -100 || vy < -0.5) {
-          if (!isOpen) onToggle();
+          if (!isOpen) {onToggle();}
         } else {
           controls.start({
             y: 0,
@@ -101,59 +106,65 @@ export default function MobileDrawer({ waypoints, onWaypointClick, isOpen, onTog
             style={{ overflow: 'hidden' }}
           >
             <div className="space-y-2 max-h-96 overflow-y-auto">
-            {waypoints.map((waypoint) => {
-              const isCompleted = waypoint.status === 'completed';
-              const isActive = waypoint.status === 'active';
+              {waypoints.map((waypoint) => {
+                const isCompleted = waypoint.status === 'completed';
+                const isActive = waypoint.status === 'active';
 
-              return (
-                <motion.button
-                  key={`${waypoint.journeyId || 'default'}-${waypoint.id}`}
-                  onClick={() => {
-                    onWaypointClick(waypoint.id);
-                    onToggle();
-                  }}
-                  className="w-full p-3 rounded-xl border transition-all duration-300 text-left"
-                  style={{
-                    background: isActive
-                      ? 'rgba(0, 217, 255, 0.1)'
-                      : isCompleted
-                      ? 'rgba(0, 255, 159, 0.05)'
-                      : 'rgba(26, 26, 26, 0.5)',
-                    borderColor: isActive
-                      ? 'rgba(0, 217, 255, 0.5)'
-                      : isCompleted
-                      ? 'rgba(0, 255, 159, 0.3)'
-                      : 'rgba(51, 51, 51, 0.3)',
-                  }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <div className="flex items-center gap-3">
-                    <div
-                      className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm border-2 flex-shrink-0"
-                      style={{
-                        backgroundColor: isCompleted ? '#00ff9f' : isActive ? '#00d9ff' : '#1a1a1a',
-                        borderColor: isCompleted ? '#00ff9f' : isActive ? '#00d9ff' : '#333',
-                        color: isCompleted || isActive ? '#000' : '#666',
-                      }}
-                    >
-                      {isCompleted ? <Check className="w-4 h-4" /> : waypoint.id}
-                    </div>
-
-                    <div className="flex-1 min-w-0">
+                return (
+                  <motion.button
+                    key={`${waypoint.journeyId || 'default'}-${waypoint.id}`}
+                    onClick={() => {
+                      onWaypointClick(waypoint.id);
+                      onToggle();
+                    }}
+                    className="w-full p-3 rounded-xl border transition-all duration-300 text-left"
+                    style={{
+                      background: isActive
+                        ? 'rgba(0, 217, 255, 0.1)'
+                        : isCompleted
+                          ? 'rgba(0, 255, 159, 0.05)'
+                          : 'rgba(26, 26, 26, 0.5)',
+                      borderColor: isActive
+                        ? 'rgba(0, 217, 255, 0.5)'
+                        : isCompleted
+                          ? 'rgba(0, 255, 159, 0.3)'
+                          : 'rgba(51, 51, 51, 0.3)',
+                    }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <div className="flex items-center gap-3">
                       <div
-                        className="text-xs uppercase tracking-wider"
+                        className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm border-2 flex-shrink-0"
                         style={{
-                          color: isActive ? '#00d9ff' : isCompleted ? '#00ff9f' : '#666',
+                          backgroundColor: isCompleted
+                            ? '#00ff9f'
+                            : isActive
+                              ? '#00d9ff'
+                              : '#1a1a1a',
+                          borderColor: isCompleted ? '#00ff9f' : isActive ? '#00d9ff' : '#333',
+                          color: isCompleted || isActive ? '#000' : '#666',
                         }}
                       >
-                        {waypoint.name}
+                        {isCompleted ? <Check className="w-4 h-4" /> : waypoint.id}
                       </div>
-                      <div className="text-xs text-gray-500 mt-0.5 truncate">{waypoint.location}</div>
+
+                      <div className="flex-1 min-w-0">
+                        <div
+                          className="text-xs uppercase tracking-wider"
+                          style={{
+                            color: isActive ? '#00d9ff' : isCompleted ? '#00ff9f' : '#666',
+                          }}
+                        >
+                          {waypoint.name}
+                        </div>
+                        <div className="text-xs text-gray-500 mt-0.5 truncate">
+                          {waypoint.location}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </motion.button>
-              );
-            })}
+                  </motion.button>
+                );
+              })}
             </div>
 
             <div className="mt-4 pt-4 border-t border-cyan-500/20">
@@ -169,7 +180,6 @@ export default function MobileDrawer({ waypoints, onWaypointClick, isOpen, onTog
           </motion.div>
         </div>
       </div>
-
     </motion.div>
   );
 }

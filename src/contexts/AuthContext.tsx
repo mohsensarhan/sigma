@@ -13,7 +13,12 @@ interface AuthContextType {
   user: AuthUser | null;
   donorProfile: DonorProfile | null;
   loading: boolean;
-  signUp: (email: string, password: string, name?: string, phone?: string) => Promise<{ error: string | null }>;
+  signUp: (
+    email: string,
+    password: string,
+    name?: string,
+    phone?: string
+  ) => Promise<{ error: string | null }>;
   signIn: (email: string, password: string) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ error: string | null }>;
@@ -36,8 +41,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
     async function loadSession() {
       try {
         // Get current session
-        const { data: { session } } = await supabase.auth.getSession();
-        
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+
         if (session?.user) {
           setUser(session.user);
           await loadDonorProfile(session.user.id);
@@ -52,20 +59,20 @@ export function AuthProvider({ children }: AuthProviderProps) {
     loadSession();
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        console.log('Auth state changed:', event, session?.user?.id);
-        
-        if (session?.user) {
-          setUser(session.user);
-          await loadDonorProfile(session.user.id);
-        } else {
-          setUser(null);
-          setDonorProfile(null);
-        }
-        setLoading(false);
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('Auth state changed:', event, session?.user?.id);
+
+      if (session?.user) {
+        setUser(session.user);
+        await loadDonorProfile(session.user.id);
+      } else {
+        setUser(null);
+        setDonorProfile(null);
       }
-    );
+      setLoading(false);
+    });
 
     return () => subscription.unsubscribe();
   }, []);
@@ -100,8 +107,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       const { data: userData } = await supabase.auth.getUser(userId);
       const user = userData.user;
-      
-      if (!user) return;
+
+      if (!user) {return;}
 
       const newProfile: Partial<DonorProfile> = {
         id: userId,
@@ -133,9 +140,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   // Sign up new user
   const signUp = async (
-    email: string, 
-    password: string, 
-    name?: string, 
+    email: string,
+    password: string,
+    name?: string,
     phone?: string
   ): Promise<{ error: string | null }> => {
     try {
@@ -215,7 +222,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
   };
 
   // Update donor profile
-  const updateProfile = async (updates: Partial<DonorProfile>): Promise<{ error: string | null }> => {
+  const updateProfile = async (
+    updates: Partial<DonorProfile>
+  ): Promise<{ error: string | null }> => {
     if (!user) {
       return { error: 'No authenticated user' };
     }
@@ -253,11 +262,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     updateProfile,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 // Hook to use auth context

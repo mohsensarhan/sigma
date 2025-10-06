@@ -3,12 +3,12 @@
  * /sms - Displays SMS messages for each donor with clickable journey links
  */
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { MessageSquare, ExternalLink, Clock, CheckCircle, AlertCircle } from 'lucide-react';
-import { MOCK_DONORS, getDonationHistory } from '../data/mockDonors';
+import { MOCK_DONORS } from '../data/mockDonors';
 import { useNavigate } from 'react-router-dom';
-import { getAllSMS } from '../services/mockSMS';
+import { getAllSMSAsync } from '../services/mockSMS';
 
 interface SMSMessage {
   id: string;
@@ -24,14 +24,52 @@ interface SMSMessage {
 
 export default function MockSMSInbox() {
   const [selectedDonor, setSelectedDonor] = useState<number>(1);
+  const [smsMessages, setSmsMessages] = useState<SMSMessage[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
-  // Get actual SMS messages from the SMS service
-  const allSMSMessages = getAllSMS();
-  console.log(`📱 Retrieved ${allSMSMessages.length} SMS messages from service`);
-  
-  // Convert SMS messages to our interface format and enrich with donor information
-  const smsMessages: SMSMessage[] = allSMSMessages.map(sms => {
+  // Load SMS messages from Supabase on mount
+  useEffect(() => {
+    async function loadSMSMessages() {
+      try {
+        console.log('📱 Loading SMS messages from Supabase...');
+        const allSMSMessages = await getAllSMSAsync();
+        console.log(`✅ Retrieved ${allSMSMessages.length} SMS messages from Supabase`);
+
+        // Convert SMS messages to our interface format and enrich with donor information
+        const formattedMessages: SMSMessage[] = allSMSMessages.map((sms) => {
+          // Find donor by phone number
+          const donor = MOCK_DONORS.find((d) => d.phone === sms.to);
+
+          // Extract tracking ID from the message body or journeyId metadata
+          const trackingId = sms.journeyId || '';
+
+          return {
+            id: sms.id,
+            donorId: donor?.id || 0,
+            donorName: donor?.name || 'Unknown',
+            donorPhone: sms.to,
+            trackingId,
+            message: sms.body,
+            timestamp: sms.timestamp,
+            status: sms.status,
+            journeyLink: `/journey/${trackingId}`,
+          };
+        });
+
+        setSmsMessages(formattedMessages);
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Failed to load SMS messages:', error);
+        setIsLoading(false);
+      }
+    }
+
+    loadSMSMessages();
+  }, []);
+
+  // Convert SMS messages to our interface format and enrich with donor information (REMOVED - now in useEffect)
+  /*const smsMessages: SMSMessage[] = allSMSMessages.map(sms => {
     // Find donor by phone number
     const donor = MOCK_DONORS.find(d => d.phone === sms.to);
     
@@ -49,13 +87,15 @@ export default function MockSMSInbox() {
       status: sms.status,
       journeyLink: `/journey/${trackingId}`
     };
-  });
-  
-  console.log(`📊 Processed ${smsMessages.length} SMS messages for display`);
-  console.log(`👤 Selected donor: ${selectedDonor}, messages: ${smsMessages.filter(msg => msg.donorId === selectedDonor).length}`);
+  });*/
+
+  console.log(`📊 Displayed ${smsMessages.length} SMS messages`);
+  console.log(
+    `👤 Selected donor: ${selectedDonor}, messages: ${smsMessages.filter((msg) => msg.donorId === selectedDonor).length}`
+  );
 
   // Filter messages for selected donor
-  const selectedDonorMessages = smsMessages.filter(msg => msg.donorId === selectedDonor);
+  const selectedDonorMessages = smsMessages.filter((msg) => msg.donorId === selectedDonor);
 
   const getStatusIcon = (status: SMSMessage['status']) => {
     switch (status) {
@@ -85,11 +125,7 @@ export default function MockSMSInbox() {
 
   return (
     <div className="scrollable-page min-h-screen bg-gradient-to-br from-indigo-900 via-gray-900 to-black text-white p-8">
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="mb-8"
-      >
+      <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
         <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
           SMS Inbox
         </h1>
@@ -97,14 +133,10 @@ export default function MockSMSInbox() {
       </motion.div>
 
       {/* Donor Tabs */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="mb-8"
-      >
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
         <div className="flex gap-4 overflow-x-auto pb-2">
           {MOCK_DONORS.map((donor, index) => {
-            const donorMessageCount = smsMessages.filter(msg => msg.donorId === donor.id).length;
+            const donorMessageCount = smsMessages.filter((msg) => msg.donorId === donor.id).length;
             const isSelected = selectedDonor === donor.id;
 
             return (
@@ -144,11 +176,16 @@ export default function MockSMSInbox() {
         <div className="flex items-center gap-3 mb-6">
           <MessageSquare className="w-6 h-6 text-indigo-400" />
           <h2 className="text-xl font-bold">
-            Messages for {MOCK_DONORS.find(d => d.id === selectedDonor)?.name}
+            Messages for {MOCK_DONORS.find((d) => d.id === selectedDonor)?.name}
           </h2>
         </div>
 
-        {selectedDonorMessages.length === 0 ? (
+        {isLoading ? (
+          <div className="text-center py-12 text-gray-500">
+            <MessageSquare className="w-16 h-16 mx-auto mb-4 opacity-50 animate-pulse" />
+            <p className="text-lg">Loading SMS messages from Supabase...</p>
+          </div>
+        ) : selectedDonorMessages.length === 0 ? (
           <div className="text-center py-12 text-gray-500">
             <MessageSquare className="w-16 h-16 mx-auto mb-4 opacity-50" />
             <p className="text-lg">No messages yet</p>
@@ -167,7 +204,9 @@ export default function MockSMSInbox() {
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-2">
                     {getStatusIcon(sms.status)}
-                    <span className={`text-xs font-semibold uppercase px-2 py-1 rounded border ${getStatusColor(sms.status)}`}>
+                    <span
+                      className={`text-xs font-semibold uppercase px-2 py-1 rounded border ${getStatusColor(sms.status)}`}
+                    >
                       {sms.status}
                     </span>
                   </div>
@@ -176,9 +215,7 @@ export default function MockSMSInbox() {
                   </div>
                 </div>
 
-                <div className="text-sm text-gray-300 mb-4 leading-relaxed">
-                  {sms.message}
-                </div>
+                <div className="text-sm text-gray-300 mb-4 leading-relaxed">{sms.message}</div>
 
                 <div className="flex items-center gap-4">
                   <button
@@ -189,9 +226,7 @@ export default function MockSMSInbox() {
                     View Journey
                   </button>
 
-                  <div className="text-xs text-gray-500 font-mono">
-                    {sms.trackingId}
-                  </div>
+                  <div className="text-xs text-gray-500 font-mono">{sms.trackingId}</div>
                 </div>
               </motion.div>
             ))}
@@ -208,25 +243,25 @@ export default function MockSMSInbox() {
       >
         <div className="p-4 bg-green-500/10 rounded-xl border border-green-500/30">
           <div className="text-2xl font-bold text-green-400">
-            {smsMessages.filter(msg => msg.status === 'delivered').length}
+            {smsMessages.filter((msg) => msg.status === 'delivered').length}
           </div>
           <div className="text-sm text-gray-400">Delivered</div>
         </div>
         <div className="p-4 bg-yellow-500/10 rounded-xl border border-yellow-500/30">
           <div className="text-2xl font-bold text-yellow-400">
-            {smsMessages.filter(msg => msg.status === 'sent').length}
+            {smsMessages.filter((msg) => msg.status === 'sent').length}
           </div>
           <div className="text-sm text-gray-400">Sent</div>
         </div>
         <div className="p-4 bg-gray-500/10 rounded-xl border border-gray-500/30">
           <div className="text-2xl font-bold text-gray-400">
-            {smsMessages.filter(msg => msg.status === 'queued').length}
+            {smsMessages.filter((msg) => msg.status === 'queued').length}
           </div>
           <div className="text-sm text-gray-400">Queued</div>
         </div>
         <div className="p-4 bg-red-500/10 rounded-xl border border-red-500/30">
           <div className="text-2xl font-bold text-red-400">
-            {smsMessages.filter(msg => msg.status === 'failed').length}
+            {smsMessages.filter((msg) => msg.status === 'failed').length}
           </div>
           <div className="text-sm text-gray-400">Failed</div>
         </div>
@@ -234,9 +269,15 @@ export default function MockSMSInbox() {
 
       {/* Nav */}
       <div className="mt-8 flex gap-4">
-        <a href="/" className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-sm">← Map</a>
-        <a href="/admin" className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-sm">Admin</a>
-        <a href="/donors" className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-sm">← Donors</a>
+        <a href="/" className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-sm">
+          ← Map
+        </a>
+        <a href="/admin" className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-sm">
+          Admin
+        </a>
+        <a href="/donors" className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-sm">
+          ← Donors
+        </a>
       </div>
     </div>
   );

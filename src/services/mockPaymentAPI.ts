@@ -44,13 +44,15 @@ class MockPaymentAPI {
   /**
    * Simulate receiving a payment webhook
    */
-  async simulatePayment(payment: Omit<MockPayment, 'id' | 'timestamp' | 'status' | 'transactionId'>): Promise<MockPayment> {
+  async simulatePayment(
+    payment: Omit<MockPayment, 'id' | 'timestamp' | 'status' | 'transactionId'>
+  ): Promise<MockPayment> {
     const newPayment: MockPayment = {
       ...payment,
       id: `payment_${this.nextId++}`,
       timestamp: new Date().toISOString(),
       status: 'completed',
-      transactionId: `txn_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+      transactionId: `txn_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
     };
 
     this.payments.push(newPayment);
@@ -68,10 +70,10 @@ class MockPaymentAPI {
           metadata: {
             donor_email: newPayment.donorEmail,
             donor_name: newPayment.donorName,
-            donor_phone: newPayment.donorPhone
+            donor_phone: newPayment.donorPhone,
           },
-          created: Date.now()
-        }
+          created: Date.now(),
+        },
       });
     }, delay);
 
@@ -99,7 +101,7 @@ class MockPaymentAPI {
    * Trigger webhook to all listeners
    */
   private triggerWebhook(webhook: MockPaymentWebhook) {
-    this.listeners.forEach(listener => {
+    this.listeners.forEach((listener) => {
       try {
         listener(webhook);
       } catch (error) {
@@ -119,7 +121,7 @@ class MockPaymentAPI {
    * Get payment by ID
    */
   getPaymentById(id: string): MockPayment | undefined {
-    return this.payments.find(payment => payment.id === id);
+    return this.payments.find((payment) => payment.id === id);
   }
 
   /**
@@ -132,22 +134,22 @@ class MockPaymentAPI {
         currency: 'USD',
         donorEmail: 'john.doe@example.com',
         donorName: 'John Doe',
-        donorPhone: '+1234567890'
+        donorPhone: '+1234567890',
       },
       {
         amount: 250,
         currency: 'USD',
         donorEmail: 'jane.smith@example.com',
         donorName: 'Jane Smith',
-        donorPhone: '+1987654321'
+        donorPhone: '+1987654321',
       },
       {
         amount: 500,
         currency: 'USD',
         donorEmail: 'mike.johnson@example.com',
         donorName: 'Mike Johnson',
-        donorPhone: '+1122334455'
-      }
+        donorPhone: '+1122334455',
+      },
     ];
 
     initialPayments.forEach((payment, index) => {
@@ -160,13 +162,15 @@ class MockPaymentAPI {
   /**
    * Simulate a failed payment
    */
-  async simulateFailedPayment(payment: Omit<MockPayment, 'id' | 'timestamp' | 'status' | 'transactionId'>): Promise<MockPayment> {
+  async simulateFailedPayment(
+    payment: Omit<MockPayment, 'id' | 'timestamp' | 'status' | 'transactionId'>
+  ): Promise<MockPayment> {
     const newPayment: MockPayment = {
       ...payment,
       id: `payment_failed_${this.nextId++}`,
       timestamp: new Date().toISOString(),
       status: 'failed',
-      transactionId: `txn_failed_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+      transactionId: `txn_failed_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
     };
 
     this.payments.push(newPayment);
@@ -184,10 +188,10 @@ class MockPaymentAPI {
           metadata: {
             donor_email: newPayment.donorEmail,
             donor_name: newPayment.donorName,
-            donor_phone: newPayment.donorPhone
+            donor_phone: newPayment.donorPhone,
           },
-          created: Date.now()
-        }
+          created: Date.now(),
+        },
       });
     }, delay);
 
@@ -207,10 +211,10 @@ class MockPaymentAPI {
    */
   getStats() {
     const total = this.payments.length;
-    const completed = this.payments.filter(p => p.status === 'completed').length;
-    const failed = this.payments.filter(p => p.status === 'failed').length;
+    const completed = this.payments.filter((p) => p.status === 'completed').length;
+    const failed = this.payments.filter((p) => p.status === 'failed').length;
     const totalAmount = this.payments
-      .filter(p => p.status === 'completed')
+      .filter((p) => p.status === 'completed')
       .reduce((sum, p) => sum + p.amount, 0);
 
     return {
@@ -218,7 +222,7 @@ class MockPaymentAPI {
       completed,
       failed,
       totalAmount,
-      averageAmount: completed > 0 ? totalAmount / completed : 0
+      averageAmount: completed > 0 ? totalAmount / completed : 0,
     };
   }
 }

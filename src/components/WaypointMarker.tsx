@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Marker } from 'react-map-gl/mapbox';
+import { Marker } from 'react-map-gl';
 
 interface WaypointMarkerProps {
   longitude: number;

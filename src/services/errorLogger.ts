@@ -1,143 +1,91 @@
-/**
- * Error Logger Service
- * Utility functions for structured error logging
- */
+interface ErrorLog {
+  level: 'error' | 'warn' | 'info';
+  message: string;
+  context?: Record<string, any>;
+  timestamp: string;
+  userAgent?: string;
+  url?: string;
+}
 
-import { ErrorLog } from '../types/settings';
+class ErrorLogger {
+  private logs: ErrorLog[] = [];
 
-// Error log storage (in-memory for now, could be persisted later)
-let errorLogs: ErrorLog[] = [];
+  log(entry: Omit<ErrorLog, 'timestamp' | 'userAgent' | 'url'>) {
+    const logEntry: ErrorLog = {
+      ...entry,
+      timestamp: new Date().toISOString(),
+      userAgent: navigator.userAgent,
+      url: window.location.href,
+    };
 
-/**
- * Log an error with context
- */
-export function logError(log: Omit<ErrorLog, 'id' | 'timestamp'>): ErrorLog {
-  const newLog: ErrorLog = {
-    id: `log-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-    timestamp: Date.now(),
-    ...log
+    this.logs.push(logEntry);
+
+    // Console log in development
+    if (import.meta.env.DEV) {
+      console[entry.level](entry.message, entry.context);
+    }
+
+    // TODO: In production, send to error tracking service
+    // this.sendToSentry(logEntry);
+    // this.sendToSupabase(logEntry);
+  }
+
+  error(message: string, context?: Record<string, any>) {
+    this.log({ level: 'error', message, context });
+  }
+
+  warn(message: string, context?: Record<string, any>) {
+    this.log({ level: 'warn', message, context });
+  }
+
+  info(message: string, context?: Record<string, any>) {
+    this.log({ level: 'info', message, context });
+  }
+
+  getLogs() {
+    return this.logs;
+  }
+
+  clearLogs() {
+    this.logs = [];
+  }
+}
+
+export const errorLogger = new ErrorLogger();
+
+// Legacy functions for backward compatibility with AdminDashboard
+export function getErrorStats() {
+  const logs = errorLogger.getLogs();
+  const total = logs.length;
+  const errors = logs.filter((log) => log.level === 'error').length;
+  const warnings = logs.filter((log) => log.level === 'warn').length;
+  const info = logs.filter((log) => log.level === 'info').length;
+
+  return {
+    total,
+    errors,
+    warnings,
+    info,
+    errorRate: total > 0 ? (errors / total) * 100 : 0,
   };
-
-  errorLogs.unshift(newLog); // Add to beginning
-  errorLogs = errorLogs.slice(0, 100); // Keep last 100
-
-  // Console output with emoji
-  const emoji = log.level === 'error' ? '❌' : log.level === 'warning' ? '⚠️' : 'ℹ️';
-  const journeyInfo = log.journeyId ? `[Journey: ${log.journeyId}]` : '';
-  const stageInfo = log.stage ? `[Stage ${log.stage}/5]` : '';
-
-  console.log(`${emoji} ${journeyInfo}${stageInfo} ${log.message}`, log.context || '');
-
-  return newLog;
 }
 
-/**
- * Log an info message
- */
-export function logInfo(message: string, context?: any, journeyId?: string, stage?: number): ErrorLog {
-  return logError({
-    level: 'info',
-    message,
-    context,
-    journeyId,
-    stage
-  });
-}
-
-/**
- * Log a warning
- */
-export function logWarning(message: string, context?: any, journeyId?: string, stage?: number): ErrorLog {
-  return logError({
-    level: 'warning',
-    message,
-    context,
-    journeyId,
-    stage
-  });
-}
-
-/**
- * Log a critical error
- */
-export function logCritical(
-  message: string,
-  error?: Error,
-  context?: any,
-  journeyId?: string,
-  stage?: number
-): ErrorLog {
-  return logError({
-    level: 'error',
-    message,
-    stack: error?.stack,
-    context: {
-      ...context,
-      errorMessage: error?.message,
-      errorName: error?.name
-    },
-    journeyId,
-    stage
-  });
-}
-
-/**
- * Get all error logs
- */
-export function getErrorLogs(): ErrorLog[] {
-  return [...errorLogs];
-}
-
-/**
- * Get error logs filtered by level
- */
-export function getErrorLogsByLevel(level: ErrorLog['level']): ErrorLog[] {
-  return errorLogs.filter(log => log.level === level);
-}
-
-/**
- * Get error logs for a specific journey
- */
-export function getErrorLogsByJourney(journeyId: string): ErrorLog[] {
-  return errorLogs.filter(log => log.journeyId === journeyId);
-}
-
-/**
- * Clear all error logs
- */
-export function clearErrorLogs(): void {
-  errorLogs = [];
-  console.log('🧹 Error logs cleared');
-}
-
-/**
- * Export error logs as CSV
- */
-export function exportErrorLogsAsCSV(): string {
-  const headers = ['Timestamp', 'Level', 'Journey ID', 'Stage', 'Message', 'Context'];
-  const rows = errorLogs.map(log => [
-    new Date(log.timestamp).toISOString(),
+export function downloadErrorLogs(): void {
+  const logs = errorLogger.getLogs();
+  const headers = ['Timestamp', 'Level', 'Message', 'Context'];
+  const rows = logs.map((log) => [
+    log.timestamp,
     log.level,
-    log.journeyId || '',
-    log.stage?.toString() || '',
     log.message,
-    JSON.stringify(log.context || {})
+    JSON.stringify(log.context || {}),
   ]);
 
   const csvContent = [
     headers.join(','),
-    ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+    ...rows.map((row) => row.map((cell) => `"${cell}"`).join(',')),
   ].join('\n');
 
-  return csvContent;
-}
-
-/**
- * Download error logs as CSV file
- */
-export function downloadErrorLogs(): void {
-  const csv = exportErrorLogsAsCSV();
-  const blob = new Blob([csv], { type: 'text/csv' });
+  const blob = new Blob([csvContent], { type: 'text/csv' });
   const url = URL.createObjectURL(blob);
 
   const link = document.createElement('a');
@@ -147,22 +95,4 @@ export function downloadErrorLogs(): void {
 
   URL.revokeObjectURL(url);
   console.log('📥 Error logs downloaded');
-}
-
-/**
- * Get error statistics
- */
-export function getErrorStats() {
-  const total = errorLogs.length;
-  const errors = errorLogs.filter(log => log.level === 'error').length;
-  const warnings = errorLogs.filter(log => log.level === 'warning').length;
-  const info = errorLogs.filter(log => log.level === 'info').length;
-
-  return {
-    total,
-    errors,
-    warnings,
-    info,
-    errorRate: total > 0 ? (errors / total) * 100 : 0
-  };
 }

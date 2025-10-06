@@ -1,0 +1,1011 @@
+[
+  {
+    "timestamp": "2025-10-05T19:03:16.733Z",
+    "type": "step",
+    "message": "🚀 Starting Correct Production Flow Test"
+  },
+  {
+    "timestamp": "2025-10-05T19:03:16.734Z",
+    "type": "info",
+    "message": "================================================================================"
+  },
+  {
+    "timestamp": "2025-10-05T19:03:16.734Z",
+    "type": "step",
+    "message": "\n📍 STEP 1: Clear Test Data from Supabase"
+  },
+  {
+    "timestamp": "2025-10-05T19:03:18.452Z",
+    "type": "info",
+    "message": "✅ Test data cleared"
+  },
+  {
+    "timestamp": "2025-10-05T19:03:18.452Z",
+    "type": "step",
+    "message": "\n📍 STEP 2: Navigate to /donors Page (MockPaymentGateway)"
+  },
+  {
+    "type": "debug",
+    "text": "[vite] connecting..."
+  },
+  {
+    "type": "debug",
+    "text": "[vite] connected."
+  },
+  {
+    "type": "log",
+    "text": "📂 Journey Service initialized with SUPABASE persistence"
+  },
+  {
+    "type": "log",
+    "text": "🔵 getAllActiveJourneys called:"
+  },
+  {
+    "type": "log",
+    "text": "   - settingsRef.current.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "   - settings.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "🔍 Checking 0 active journeys for progression"
+  },
+  {
+    "type": "log",
+    "text": "💰 Loading donation history from Supabase..."
+  },
+  {
+    "type": "log",
+    "text": "🔄 settingsRef updated - active: 0, completed: 0"
+  },
+  {
+    "type": "log",
+    "text": "🟢 GlobalSettingsProvider MOUNTED"
+  },
+  {
+    "type": "log",
+    "text": "Auth state changed: INITIAL_SESSION "
+  },
+  {
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()"
+  },
+  {
+    "type": "error",
+    "text": "Failed to load donation history: JSHandle@object"
+  },
+  {
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()"
+  },
+  {
+    "type": "error",
+    "text": "❌ Failed to load journeys from Supabase: Could not find the table 'public.journeys' in the schema cache"
+  },
+  {
+    "type": "log",
+    "text": "🔵 getAllActiveJourneys called:"
+  },
+  {
+    "type": "log",
+    "text": "   - settingsRef.current.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "   - settings.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "✅ Supabase connected successfully"
+  },
+  {
+    "type": "log",
+    "text": "🔵 getAllActiveJourneys called:"
+  },
+  {
+    "type": "log",
+    "text": "   - settingsRef.current.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "   - settings.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "🔵 getAllActiveJourneys called:"
+  },
+  {
+    "type": "log",
+    "text": "   - settingsRef.current.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "   - settings.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "🔵 getAllActiveJourneys called:"
+  },
+  {
+    "type": "log",
+    "text": "   - settingsRef.current.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "   - settings.activeJourneys.length: 0"
+  },
+  {
+    "timestamp": "2025-10-05T19:03:25.040Z",
+    "type": "info",
+    "message": "📸 Screenshot: 01-donors-page.png - Donors page with DONATE buttons"
+  },
+  {
+    "timestamp": "2025-10-05T19:03:25.071Z",
+    "type": "success",
+    "message": "✅ Donors Page Loaded"
+  },
+  {
+    "timestamp": "2025-10-05T19:03:25.091Z",
+    "type": "success",
+    "message": "✅ Donor Cards Display"
+  },
+  {
+    "timestamp": "2025-10-05T19:03:25.091Z",
+    "type": "step",
+    "message": "\n📍 STEP 3: Click DONATE Button for First Donor"
+  },
+  {
+    "timestamp": "2025-10-05T19:03:25.126Z",
+    "type": "info",
+    "message": "✅ Clicked DONATE button"
+  },
+  {
+    "type": "log",
+    "text": "✅ Supabase: Loaded 6 programs (cached)"
+  },
+  {
+    "type": "log",
+    "text": "🔵 getAllActiveJourneys called:"
+  },
+  {
+    "type": "log",
+    "text": "   - settingsRef.current.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "   - settings.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "✅ Supabase: Loaded 5 governorates (cached)"
+  },
+  {
+    "type": "log",
+    "text": "🔵 getAllActiveJourneys called:"
+  },
+  {
+    "type": "log",
+    "text": "   - settingsRef.current.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "   - settings.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "✅ Supabase: Found 1 families for program emergency in qena"
+  },
+  {
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()"
+  },
+  {
+    "type": "error",
+    "text": "Failed to write donation to Supabase: JSHandle@object"
+  },
+  {
+    "type": "log",
+    "text": "📱 Sending SMS to +201234567890: Thank you Ahmed Hassan! Your donation of $50 has been received. Track your journey here: http://localhost:5173/journey/EFB-2025-1759691007097-5840"
+  },
+  {
+    "type": "log",
+    "text": "📱 [MOCK SMS] Queued to +201234567890: \"Thank you Ahmed Hassan! Your donation of $50 has b...\""
+  },
+  {
+    "type": "log",
+    "text": "🔵 getAllActiveJourneys called:"
+  },
+  {
+    "type": "log",
+    "text": "   - settingsRef.current.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "   - settings.activeJourneys.length: 0"
+  },
+  {
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()"
+  },
+  {
+    "type": "error",
+    "text": "Failed to write SMS to Supabase: JSHandle@object"
+  },
+  {
+    "type": "log",
+    "text": "✅ SMS sent with ID: SMS-1759691007587-1"
+  },
+  {
+    "type": "log",
+    "text": "🔵 registerJourney called for: EFB-2025-1759691007097-5840"
+  },
+  {
+    "type": "log",
+    "text": "🔵 BEFORE registration - settingsRef.current.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "🔵 INSIDE setSettings - prev.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "🔵 After registration, activeJourneys count: 1"
+  },
+  {
+    "type": "log",
+    "text": "🔵 Returning new state with 1 journeys"
+  },
+  {
+    "type": "log",
+    "text": "🔵 AFTER setSettings called - settingsRef.current.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "ℹ️ [INFO] Journey registered: EFB-2025-1759691007097-5840 JSHandle@object"
+  },
+  {
+    "type": "log",
+    "text": "ℹ️ [INFO] Donation received: Ahmed Hassan donated $50 JSHandle@object"
+  },
+  {
+    "type": "log",
+    "text": "🔄 settingsRef updated - active: 1, completed: 0"
+  },
+  {
+    "timestamp": "2025-10-05T19:03:28.308Z",
+    "type": "info",
+    "message": "📸 Screenshot: 02-donation-triggered.png - After clicking DONATE button"
+  },
+  {
+    "timestamp": "2025-10-05T19:03:28.308Z",
+    "type": "error",
+    "message": "❌ Failed to extract journey ID from console"
+  },
+  {
+    "timestamp": "2025-10-05T19:03:28.308Z",
+    "type": "error",
+    "message": "❌ Journey ID Extracted"
+  },
+  {
+    "timestamp": "2025-10-05T19:03:28.308Z",
+    "type": "step",
+    "message": "\n📍 STEP 4: Verify Journey Saved to Supabase"
+  },
+  {
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()"
+  },
+  {
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()"
+  },
+  {
+    "type": "error",
+    "text": "❌ Failed to save journey to Supabase: Could not find the table 'public.journeys' in the schema cache"
+  },
+  {
+    "type": "log",
+    "text": "📱 [MOCK SMS] Sent to +201234567890"
+  },
+  {
+    "type": "log",
+    "text": "🔵 getAllActiveJourneys called:"
+  },
+  {
+    "type": "log",
+    "text": "   - settingsRef.current.activeJourneys.length: 1"
+  },
+  {
+    "type": "log",
+    "text": "   - settings.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "▶️ [Poll] Starting progression for new journey: EFB-2025-1759691007097-5840 (Stage 1)"
+  },
+  {
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()"
+  },
+  {
+    "type": "log",
+    "text": "📱 [MOCK SMS] Delivered to +201234567890"
+  },
+  {
+    "type": "log",
+    "text": "🔵 getAllActiveJourneys called:"
+  },
+  {
+    "type": "log",
+    "text": "   - settingsRef.current.activeJourneys.length: 1"
+  },
+  {
+    "type": "log",
+    "text": "   - settings.activeJourneys.length: 0"
+  },
+  {
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()"
+  },
+  {
+    "timestamp": "2025-10-05T19:03:30.323Z",
+    "type": "step",
+    "message": "\n📍 STEP 5: Verify SMS Logged in Supabase"
+  },
+  {
+    "timestamp": "2025-10-05T19:03:30.324Z",
+    "type": "step",
+    "message": "\n📍 STEP 6: Navigate to /sms Inbox"
+  },
+  {
+    "type": "debug",
+    "text": "[vite] connecting..."
+  },
+  {
+    "type": "debug",
+    "text": "[vite] connected."
+  },
+  {
+    "type": "log",
+    "text": "📂 Journey Service initialized with SUPABASE persistence"
+  },
+  {
+    "type": "log",
+    "text": "📊 Displayed 0 SMS messages"
+  },
+  {
+    "type": "log",
+    "text": "👤 Selected donor: 1, messages: 0"
+  },
+  {
+    "type": "log",
+    "text": "🔵 getAllActiveJourneys called:"
+  },
+  {
+    "type": "log",
+    "text": "   - settingsRef.current.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "   - settings.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "🔍 Checking 0 active journeys for progression"
+  },
+  {
+    "type": "log",
+    "text": "📱 Loading SMS messages from Supabase..."
+  },
+  {
+    "type": "log",
+    "text": "🔄 settingsRef updated - active: 0, completed: 0"
+  },
+  {
+    "type": "log",
+    "text": "🟢 GlobalSettingsProvider MOUNTED"
+  },
+  {
+    "type": "log",
+    "text": "Auth state changed: INITIAL_SESSION "
+  },
+  {
+    "type": "log",
+    "text": "✅ Supabase connected successfully"
+  },
+  {
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()"
+  },
+  {
+    "type": "error",
+    "text": "❌ Failed to load journeys from Supabase: Could not find the table 'public.journeys' in the schema cache"
+  },
+  {
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()"
+  },
+  {
+    "type": "error",
+    "text": "Error fetching all SMS: JSHandle@object"
+  },
+  {
+    "type": "log",
+    "text": "✅ Retrieved 0 SMS messages from Supabase"
+  },
+  {
+    "type": "log",
+    "text": "📊 Displayed 0 SMS messages"
+  },
+  {
+    "type": "log",
+    "text": "👤 Selected donor: 1, messages: 0"
+  },
+  {
+    "type": "log",
+    "text": "🔵 getAllActiveJourneys called:"
+  },
+  {
+    "type": "log",
+    "text": "   - settingsRef.current.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "   - settings.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "🔵 getAllActiveJourneys called:"
+  },
+  {
+    "type": "log",
+    "text": "   - settingsRef.current.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "   - settings.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "🔵 getAllActiveJourneys called:"
+  },
+  {
+    "type": "log",
+    "text": "   - settingsRef.current.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "   - settings.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "🔵 getAllActiveJourneys called:"
+  },
+  {
+    "type": "log",
+    "text": "   - settingsRef.current.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "   - settings.activeJourneys.length: 0"
+  },
+  {
+    "timestamp": "2025-10-05T19:03:35.596Z",
+    "type": "info",
+    "message": "📸 Screenshot: 03-sms-inbox.png - SMS inbox showing messages"
+  },
+  {
+    "timestamp": "2025-10-05T19:03:35.614Z",
+    "type": "info",
+    "message": "📨 SMS Inbox shows 0 messages"
+  },
+  {
+    "timestamp": "2025-10-05T19:03:35.614Z",
+    "type": "error",
+    "message": "❌ SMS Displays in Inbox"
+  },
+  {
+    "timestamp": "2025-10-05T19:03:35.614Z",
+    "type": "step",
+    "message": "\n📍 STEP 7: Click Tracking Link to View Journey"
+  },
+  {
+    "timestamp": "2025-10-05T19:03:35.614Z",
+    "type": "step",
+    "message": "\n📍 STEP 8: Watch Journey Progression Through 5 Stages"
+  },
+  {
+    "timestamp": "2025-10-05T19:03:35.614Z",
+    "type": "info",
+    "message": "⏳ Monitoring progression for 30 seconds..."
+  },
+  {
+    "type": "log",
+    "text": "🔵 getAllActiveJourneys called:"
+  },
+  {
+    "type": "log",
+    "text": "   - settingsRef.current.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "   - settings.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "🔵 getAllActiveJourneys called:"
+  },
+  {
+    "type": "log",
+    "text": "   - settingsRef.current.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "   - settings.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "🔵 getAllActiveJourneys called:"
+  },
+  {
+    "type": "log",
+    "text": "   - settingsRef.current.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "   - settings.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "🔵 getAllActiveJourneys called:"
+  },
+  {
+    "type": "log",
+    "text": "   - settingsRef.current.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "   - settings.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "🔵 getAllActiveJourneys called:"
+  },
+  {
+    "type": "log",
+    "text": "   - settingsRef.current.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "   - settings.activeJourneys.length: 0"
+  },
+  {
+    "timestamp": "2025-10-05T19:03:40.794Z",
+    "type": "info",
+    "message": "📸 Screenshot: 05-progression-5s.png - Journey progression at 5s"
+  },
+  {
+    "timestamp": "2025-10-05T19:03:40.794Z",
+    "type": "info",
+    "message": "   5s: Stage 2=false, Stage 3=false, Stage 4=false, Stage 5=false"
+  },
+  {
+    "type": "log",
+    "text": "🔵 getAllActiveJourneys called:"
+  },
+  {
+    "type": "log",
+    "text": "   - settingsRef.current.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "   - settings.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "🔵 getAllActiveJourneys called:"
+  },
+  {
+    "type": "log",
+    "text": "   - settingsRef.current.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "   - settings.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "🔵 getAllActiveJourneys called:"
+  },
+  {
+    "type": "log",
+    "text": "   - settingsRef.current.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "   - settings.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "🔵 getAllActiveJourneys called:"
+  },
+  {
+    "type": "log",
+    "text": "   - settingsRef.current.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "   - settings.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "🔵 getAllActiveJourneys called:"
+  },
+  {
+    "type": "log",
+    "text": "   - settingsRef.current.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "   - settings.activeJourneys.length: 0"
+  },
+  {
+    "timestamp": "2025-10-05T19:03:45.983Z",
+    "type": "info",
+    "message": "📸 Screenshot: 05-progression-10s.png - Journey progression at 10s"
+  },
+  {
+    "timestamp": "2025-10-05T19:03:45.983Z",
+    "type": "info",
+    "message": "   10s: Stage 2=false, Stage 3=false, Stage 4=false, Stage 5=false"
+  },
+  {
+    "type": "log",
+    "text": "🔵 getAllActiveJourneys called:"
+  },
+  {
+    "type": "log",
+    "text": "   - settingsRef.current.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "   - settings.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "🔵 getAllActiveJourneys called:"
+  },
+  {
+    "type": "log",
+    "text": "   - settingsRef.current.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "   - settings.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "🔵 getAllActiveJourneys called:"
+  },
+  {
+    "type": "log",
+    "text": "   - settingsRef.current.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "   - settings.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "🔵 getAllActiveJourneys called:"
+  },
+  {
+    "type": "log",
+    "text": "   - settingsRef.current.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "   - settings.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "🔵 getAllActiveJourneys called:"
+  },
+  {
+    "type": "log",
+    "text": "   - settingsRef.current.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "   - settings.activeJourneys.length: 0"
+  },
+  {
+    "timestamp": "2025-10-05T19:03:51.203Z",
+    "type": "info",
+    "message": "📸 Screenshot: 05-progression-15s.png - Journey progression at 15s"
+  },
+  {
+    "timestamp": "2025-10-05T19:03:51.204Z",
+    "type": "info",
+    "message": "   15s: Stage 2=false, Stage 3=false, Stage 4=false, Stage 5=false"
+  },
+  {
+    "type": "log",
+    "text": "🔵 getAllActiveJourneys called:"
+  },
+  {
+    "type": "log",
+    "text": "   - settingsRef.current.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "   - settings.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "🔵 getAllActiveJourneys called:"
+  },
+  {
+    "type": "log",
+    "text": "   - settingsRef.current.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "   - settings.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "🔵 getAllActiveJourneys called:"
+  },
+  {
+    "type": "log",
+    "text": "   - settingsRef.current.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "   - settings.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "🔵 getAllActiveJourneys called:"
+  },
+  {
+    "type": "log",
+    "text": "   - settingsRef.current.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "   - settings.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "🔵 getAllActiveJourneys called:"
+  },
+  {
+    "type": "log",
+    "text": "   - settingsRef.current.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "   - settings.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "🔵 getAllActiveJourneys called:"
+  },
+  {
+    "type": "log",
+    "text": "   - settingsRef.current.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "   - settings.activeJourneys.length: 0"
+  },
+  {
+    "timestamp": "2025-10-05T19:03:56.392Z",
+    "type": "info",
+    "message": "📸 Screenshot: 05-progression-20s.png - Journey progression at 20s"
+  },
+  {
+    "timestamp": "2025-10-05T19:03:56.392Z",
+    "type": "info",
+    "message": "   20s: Stage 2=false, Stage 3=false, Stage 4=false, Stage 5=false"
+  },
+  {
+    "type": "log",
+    "text": "🔵 getAllActiveJourneys called:"
+  },
+  {
+    "type": "log",
+    "text": "   - settingsRef.current.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "   - settings.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "🔵 getAllActiveJourneys called:"
+  },
+  {
+    "type": "log",
+    "text": "   - settingsRef.current.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "   - settings.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "🔵 getAllActiveJourneys called:"
+  },
+  {
+    "type": "log",
+    "text": "   - settingsRef.current.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "   - settings.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "🔵 getAllActiveJourneys called:"
+  },
+  {
+    "type": "log",
+    "text": "   - settingsRef.current.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "   - settings.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "🔵 getAllActiveJourneys called:"
+  },
+  {
+    "type": "log",
+    "text": "   - settingsRef.current.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "   - settings.activeJourneys.length: 0"
+  },
+  {
+    "timestamp": "2025-10-05T19:04:01.574Z",
+    "type": "info",
+    "message": "📸 Screenshot: 05-progression-25s.png - Journey progression at 25s"
+  },
+  {
+    "timestamp": "2025-10-05T19:04:01.574Z",
+    "type": "info",
+    "message": "   25s: Stage 2=false, Stage 3=false, Stage 4=false, Stage 5=false"
+  },
+  {
+    "type": "log",
+    "text": "🔵 getAllActiveJourneys called:"
+  },
+  {
+    "type": "log",
+    "text": "   - settingsRef.current.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "   - settings.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "🔵 getAllActiveJourneys called:"
+  },
+  {
+    "type": "log",
+    "text": "   - settingsRef.current.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "   - settings.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "🔵 getAllActiveJourneys called:"
+  },
+  {
+    "type": "log",
+    "text": "   - settingsRef.current.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "   - settings.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "🔵 getAllActiveJourneys called:"
+  },
+  {
+    "type": "log",
+    "text": "   - settingsRef.current.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "   - settings.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "🔵 getAllActiveJourneys called:"
+  },
+  {
+    "type": "log",
+    "text": "   - settingsRef.current.activeJourneys.length: 0"
+  },
+  {
+    "type": "log",
+    "text": "   - settings.activeJourneys.length: 0"
+  },
+  {
+    "timestamp": "2025-10-05T19:04:06.761Z",
+    "type": "info",
+    "message": "📸 Screenshot: 05-progression-30s.png - Journey progression at 30s"
+  },
+  {
+    "timestamp": "2025-10-05T19:04:06.762Z",
+    "type": "info",
+    "message": "   30s: Stage 2=false, Stage 3=false, Stage 4=false, Stage 5=false"
+  },
+  {
+    "timestamp": "2025-10-05T19:04:06.762Z",
+    "type": "error",
+    "message": "❌ Journey Reached Stage 2"
+  },
+  {
+    "timestamp": "2025-10-05T19:04:06.762Z",
+    "type": "error",
+    "message": "❌ Journey Reached Stage 3"
+  },
+  {
+    "timestamp": "2025-10-05T19:04:06.762Z",
+    "type": "error",
+    "message": "❌ Journey Reached Stage 4"
+  },
+  {
+    "timestamp": "2025-10-05T19:04:06.762Z",
+    "type": "error",
+    "message": "❌ Journey Reached Stage 5"
+  },
+  {
+    "timestamp": "2025-10-05T19:04:06.762Z",
+    "type": "step",
+    "message": "\n📍 STEP 9: Final Supabase Data Verification"
+  },
+  {
+    "timestamp": "2025-10-05T19:04:06.762Z",
+    "type": "info",
+    "message": "\n================================================================================"
+  },
+  {
+    "timestamp": "2025-10-05T19:04:06.762Z",
+    "type": "step",
+    "message": "📊 FINAL TEST SUMMARY"
+  },
+  {
+    "timestamp": "2025-10-05T19:04:06.762Z",
+    "type": "info",
+    "message": "================================================================================"
+  },
+  {
+    "timestamp": "2025-10-05T19:04:06.762Z",
+    "type": "success",
+    "message": "✅ Validations Passed: 2"
+  },
+  {
+    "timestamp": "2025-10-05T19:04:06.762Z",
+    "type": "error",
+    "message": "❌ Validations Failed: 6"
+  },
+  {
+    "timestamp": "2025-10-05T19:04:06.762Z",
+    "type": "warning",
+    "message": "\n🎯 Pass Rate: 25.0%"
+  }
+]

@@ -12,13 +12,7 @@
 
 import { mockDatabase } from './mockDatabase';
 import { supabase } from '../supabaseClient';
-import type {
-  Anchor,
-  Governorate,
-  Village,
-  Program,
-  Family,
-} from '../types/database';
+import type { Anchor, Governorate, Village, Program, Family } from '../types/database';
 
 // ============================================================================
 // CACHE - Avoid duplicate Supabase queries
@@ -44,24 +38,20 @@ export function getAllAnchors(): Anchor[] {
 
 export async function getGovernorate(id: string): Promise<Governorate | undefined> {
   try {
-    const { data, error } = await supabase
-      .from('governorates')
-      .select('*')
-      .eq('id', id)
-      .single();
+    const { data, error } = await supabase.from('governorates').select('*').eq('id', id).single();
 
     if (error) {
       console.error('Supabase error fetching governorate:', error.message);
       return mockDatabase.governorates.find((g) => g.id === id);
     }
 
-    if (!data) return undefined;
+    if (!data) {return undefined;}
 
     return {
       id: data.id,
       name: data.name,
       weight: data.weight,
-      strategicWarehouse: data.strategic_warehouse
+      strategicWarehouse: data.strategic_warehouse,
     };
   } catch (err) {
     console.error('Unexpected error fetching governorate:', err);
@@ -76,10 +66,7 @@ export async function getAllGovernorates(): Promise<Governorate[]> {
   }
 
   try {
-    const { data, error } = await supabase
-      .from('governorates')
-      .select('*')
-      .order('name');
+    const { data, error } = await supabase.from('governorates').select('*').order('name');
 
     if (error) {
       console.error('❌ Supabase error fetching governorates:', error.message);
@@ -92,11 +79,11 @@ export async function getAllGovernorates(): Promise<Governorate[]> {
     }
 
     // Transform and cache
-    governoratesCache = (data || []).map(row => ({
+    governoratesCache = (data || []).map((row) => ({
       id: row.id,
       name: row.name,
       weight: row.weight,
-      strategicWarehouse: row.strategic_warehouse
+      strategicWarehouse: row.strategic_warehouse,
     }));
 
     return governoratesCache;
@@ -111,20 +98,115 @@ export async function getAllGovernorates(): Promise<Governorate[]> {
 // VILLAGES
 // ============================================================================
 
-export function getVillage(id: string): Village | undefined {
-  return mockDatabase.villages.find((v) => v.id === id);
+let villagesCache: Village[] | null = null;
+
+export async function getVillage(id: string): Promise<Village | undefined> {
+  try {
+    const { data, error } = await supabase.from('villages').select('*').eq('id', id).single();
+
+    if (error) {
+      console.warn('⚠️ Supabase error fetching village, using fallback');
+      return mockDatabase.villages.find((v) => v.id === id);
+    }
+
+    if (!data) {return undefined;}
+
+    return {
+      id: data.id,
+      governorateId: data.governorate_id,
+      name: data.name,
+      lon: data.lon,
+      lat: data.lat,
+    };
+  } catch (err) {
+    console.warn('⚠️ Error fetching village, using fallback:', err);
+    return mockDatabase.villages.find((v) => v.id === id);
+  }
 }
 
-export function getVillagesByGovernorate(governorateId: string): Village[] {
-  return mockDatabase.villages.filter((v) => v.governorateId === governorateId);
+export async function getVillagesByGovernorate(governorateId: string): Promise<Village[]> {
+  try {
+    const { data, error } = await supabase
+      .from('villages')
+      .select('*')
+      .eq('governorate_id', governorateId);
+
+    if (error) {
+      console.warn('⚠️ Supabase error fetching villages, using fallback');
+      return mockDatabase.villages.filter((v) => v.governorateId === governorateId);
+    }
+
+    return (data || []).map((row) => ({
+      id: row.id,
+      governorateId: row.governorate_id,
+      name: row.name,
+      lon: row.lon,
+      lat: row.lat,
+    }));
+  } catch (err) {
+    console.warn('⚠️ Error fetching villages, using fallback:', err);
+    return mockDatabase.villages.filter((v) => v.governorateId === governorateId);
+  }
+}
+
+export async function getAllVillages(): Promise<Village[]> {
+  // Return cached data if available
+  if (villagesCache) {
+    return villagesCache;
+  }
+
+  try {
+    const { data, error } = await supabase.from('villages').select('*').order('name');
+
+    if (error) {
+      console.warn('⚠️ Supabase error fetching all villages, using fallback');
+      return mockDatabase.villages;
+    }
+
+    if (import.meta.env.DEV) {
+      console.log('✅ Supabase: Loaded', data?.length || 0, 'villages (cached)');
+    }
+
+    // Transform and cache
+    villagesCache = (data || []).map((row) => ({
+      id: row.id,
+      governorateId: row.governorate_id,
+      name: row.name,
+      lon: row.lon,
+      lat: row.lat,
+    }));
+
+    return villagesCache;
+  } catch (err) {
+    console.warn('⚠️ Error fetching all villages, using fallback:', err);
+    return mockDatabase.villages;
+  }
 }
 
 // ============================================================================
 // PROGRAMS
 // ============================================================================
 
-export function getProgram(id: string): Program | undefined {
-  return mockDatabase.programs.find((p) => p.id === id);
+export async function getProgram(id: string): Promise<Program | undefined> {
+  try {
+    const { data, error } = await supabase.from('programs').select('*').eq('id', id).single();
+
+    if (error) {
+      console.warn('⚠️ Supabase error fetching program, using fallback');
+      return mockDatabase.programs.find((p) => p.id === id);
+    }
+
+    if (!data) {return undefined;}
+
+    return {
+      id: data.id,
+      name: data.name,
+      weight: data.weight,
+    };
+  } catch (err) {
+    console.warn('⚠️ Error fetching program, using fallback:', err);
+    return mockDatabase.programs.find((p) => p.id === id);
+  }
 }
 
 export async function getAllPrograms(): Promise<Program[]> {
@@ -134,10 +216,7 @@ export async function getAllPrograms(): Promise<Program[]> {
   }
 
   try {
-    const { data, error } = await supabase
-      .from('programs')
-      .select('*')
-      .order('name');
+    const { data, error } = await supabase.from('programs').select('*').order('name');
 
     if (error) {
       console.error('❌ Supabase error fetching programs:', error.message);
@@ -163,16 +242,75 @@ export async function getAllPrograms(): Promise<Program[]> {
 // FAMILIES
 // ============================================================================
 
-export function getFamily(id: string): Family | undefined {
-  return mockDatabase.families.find((f) => f.id === id);
+export async function getFamily(id: string): Promise<Family | undefined> {
+  try {
+    const { data, error } = await supabase.from('families').select('*').eq('id', id).single();
+
+    if (error) {
+      console.warn('⚠️ Supabase error fetching family, using fallback');
+      return mockDatabase.families.find((f) => f.id === id);
+    }
+
+    if (!data) {return undefined;}
+
+    return {
+      id: data.id,
+      programId: data.program_id,
+      villageId: data.village_id,
+      profile: data.profile,
+    };
+  } catch (err) {
+    console.warn('⚠️ Error fetching family, using fallback:', err);
+    return mockDatabase.families.find((f) => f.id === id);
+  }
 }
 
-export function getFamiliesByProgram(programId: string): Family[] {
-  return mockDatabase.families.filter((f) => f.programId === programId);
+export async function getFamiliesByProgram(programId: string): Promise<Family[]> {
+  try {
+    const { data, error } = await supabase
+      .from('families')
+      .select('*')
+      .eq('program_id', programId);
+
+    if (error) {
+      console.warn('⚠️ Supabase error fetching families by program, using fallback');
+      return mockDatabase.families.filter((f) => f.programId === programId);
+    }
+
+    return (data || []).map((row) => ({
+      id: row.id,
+      programId: row.program_id,
+      villageId: row.village_id,
+      profile: row.profile,
+    }));
+  } catch (err) {
+    console.warn('⚠️ Error fetching families by program, using fallback:', err);
+    return mockDatabase.families.filter((f) => f.programId === programId);
+  }
 }
 
-export function getFamiliesByVillage(villageId: string): Family[] {
-  return mockDatabase.families.filter((f) => f.villageId === villageId);
+export async function getFamiliesByVillage(villageId: string): Promise<Family[]> {
+  try {
+    const { data, error } = await supabase
+      .from('families')
+      .select('*')
+      .eq('village_id', villageId);
+
+    if (error) {
+      console.warn('⚠️ Supabase error fetching families by village, using fallback');
+      return mockDatabase.families.filter((f) => f.villageId === villageId);
+    }
+
+    return (data || []).map((row) => ({
+      id: row.id,
+      programId: row.program_id,
+      villageId: row.village_id,
+      profile: row.profile,
+    }));
+  } catch (err) {
+    console.warn('⚠️ Error fetching families by village, using fallback:', err);
+    return mockDatabase.families.filter((f) => f.villageId === villageId);
+  }
 }
 
 export async function getFamiliesByProgramAndGovernorate(
@@ -188,14 +326,14 @@ export async function getFamiliesByProgramAndGovernorate(
 
     if (villageError) {
       console.warn('⚠️ Supabase error fetching villages, using fallback');
-      const governorateVillages = getVillagesByGovernorate(governorateId);
+      const governorateVillages = await getVillagesByGovernorate(governorateId);
       const villageIds = new Set(governorateVillages.map((v) => v.id));
       return mockDatabase.families.filter(
         (f) => f.programId === programId && villageIds.has(f.villageId)
       );
     }
 
-    const villageIds = (villages || []).map(v => v.id);
+    const villageIds = (villages || []).map((v) => v.id);
 
     // Get families matching program and villages
     const { data, error } = await supabase
@@ -206,7 +344,7 @@ export async function getFamiliesByProgramAndGovernorate(
 
     if (error) {
       console.warn('⚠️ Supabase error fetching families, using fallback');
-      const governorateVillages = getVillagesByGovernorate(governorateId);
+      const governorateVillages = await getVillagesByGovernorate(governorateId);
       const villageIdSet = new Set(governorateVillages.map((v) => v.id));
       return mockDatabase.families.filter(
         (f) => f.programId === programId && villageIdSet.has(f.villageId)
@@ -214,18 +352,25 @@ export async function getFamiliesByProgramAndGovernorate(
     }
 
     if (import.meta.env.DEV) {
-      console.log('✅ Supabase: Found', data?.length || 0, 'families for program', programId, 'in', governorateId);
+      console.log(
+        '✅ Supabase: Found',
+        data?.length || 0,
+        'families for program',
+        programId,
+        'in',
+        governorateId
+      );
     }
 
-    return (data || []).map(row => ({
+    return (data || []).map((row) => ({
       id: row.id,
       programId: row.program_id,
       villageId: row.village_id,
-      profile: row.profile
+      profile: row.profile,
     }));
   } catch (err) {
     console.warn('⚠️ Error fetching families, using fallback:', err);
-    const governorateVillages = getVillagesByGovernorate(governorateId);
+    const governorateVillages = await getVillagesByGovernorate(governorateId);
     const villageIds = new Set(governorateVillages.map((v) => v.id));
     return mockDatabase.families.filter(
       (f) => f.programId === programId && villageIds.has(f.villageId)
@@ -233,11 +378,40 @@ export async function getFamiliesByProgramAndGovernorate(
   }
 }
 
-export function getFamiliesByGovernorate(governorateId: string): Family[] {
-  const governorateVillages = getVillagesByGovernorate(governorateId);
-  const villageIds = new Set(governorateVillages.map((v) => v.id));
+export async function getFamiliesByGovernorate(governorateId: string): Promise<Family[]> {
+  try {
+    // Get villages for this governorate
+    const villages = await getVillagesByGovernorate(governorateId);
+    const villageIds = villages.map((v) => v.id);
 
-  return mockDatabase.families.filter((f) => villageIds.has(f.villageId));
+    if (villageIds.length === 0) {
+      return [];
+    }
+
+    // Get all families in these villages
+    const { data, error } = await supabase
+      .from('families')
+      .select('*')
+      .in('village_id', villageIds);
+
+    if (error) {
+      console.warn('⚠️ Supabase error fetching families by governorate, using fallback');
+      const villageIdSet = new Set(villageIds);
+      return mockDatabase.families.filter((f) => villageIdSet.has(f.villageId));
+    }
+
+    return (data || []).map((row) => ({
+      id: row.id,
+      programId: row.program_id,
+      villageId: row.village_id,
+      profile: row.profile,
+    }));
+  } catch (err) {
+    console.warn('⚠️ Error fetching families by governorate, using fallback:', err);
+    const governorateVillages = await getVillagesByGovernorate(governorateId);
+    const villageIds = new Set(governorateVillages.map((v) => v.id));
+    return mockDatabase.families.filter((f) => villageIds.has(f.villageId));
+  }
 }
 
 // ============================================================================

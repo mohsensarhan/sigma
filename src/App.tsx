@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import Map, { Layer, Source, MapRef } from 'react-map-gl/mapbox';
+import Map, { Layer, Source, MapRef } from 'react-map-gl';
 import { motion } from 'framer-motion';
 import WaypointMarker from './components/WaypointMarker';
 import DonationInfoPanel from './components/DonationInfoPanel';
@@ -14,6 +14,9 @@ import AdminDashboard from './pages/AdminDashboard';
 import MockPaymentGateway from './pages/MockPaymentGateway';
 import MockSMSInbox from './pages/MockSMSInbox';
 import JourneyViewer from './pages/JourneyViewer';
+import { ErrorBoundary } from './components/ErrorBoundary';
+import { ErrorFallback } from './components/ErrorFallback';
+import { ErrorTest } from './components/ErrorTest';
 import { useGlobalSettings } from './contexts/GlobalSettingsContext';
 import { Waypoint } from './data/waypoints';
 import { useJourneyManager } from './hooks/useJourneyManager';
@@ -37,14 +40,17 @@ function DonationTracker() {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
   // Get journeys from global context (registered from payment gateway)
-  const { getAllActiveJourneys, getAllCompletedJourneys, updateJourney } = useGlobalSettings();
+  const { getAllActiveJourneys, getAllCompletedJourneys, updateJourney, registerJourney } =
+    useGlobalSettings();
   const globalJourneys = [...getAllActiveJourneys(), ...getAllCompletedJourneys()];
 
   // Debug logging
   useEffect(() => {
     const activeCount = getAllActiveJourneys().length;
     const completedCount = getAllCompletedJourneys().length;
-    console.log(`📊 DonationTracker: ${activeCount} active, ${completedCount} completed global journeys`);
+    console.log(
+      `📊 DonationTracker: ${activeCount} active, ${completedCount} completed global journeys`
+    );
   }, [getAllActiveJourneys, getAllCompletedJourneys]);
 
   // Multi-journey manager (for admin panel triggers only)
@@ -52,12 +58,12 @@ function DonationTracker() {
     state,
     startJourney,
     clearAllJourneys,
-    getAllWaypoints: getLocalWaypoints
+    getAllWaypoints: getLocalWaypoints,
   } = useJourneyManager({
     onJourneyStageUpdate: (journeyId, stage) => {
       console.log(`🚀 Journey ${journeyId} → Stage ${stage}/5`);
       // Sync with global context
-      const journey = state.journeys.find(j => j.id === journeyId);
+      const journey = state.journeys.find((j) => j.id === journeyId);
       if (journey) {
         updateJourney(journeyId, { currentStage: stage });
       }
@@ -66,13 +72,13 @@ function DonationTracker() {
       console.log(`✅ Journey ${journeyId} COMPLETED`);
       // Sync with global context
       updateJourney(journeyId, { status: 'completed', completedAt: Date.now() });
-    }
+    },
   });
 
   // Merge waypoints from both local journeys and global journeys
   const localWaypoints = getLocalWaypoints();
-  const globalWaypoints = globalJourneys.flatMap(journey =>
-    journey.waypoints.map(w => ({ ...w, journeyId: journey.id }))
+  const globalWaypoints = globalJourneys.flatMap((journey) =>
+    journey.waypoints.map((w) => ({ ...w, journeyId: journey.id }))
   );
   const waypoints = [...localWaypoints, ...globalWaypoints];
 
@@ -86,18 +92,33 @@ function DonationTracker() {
       const journeyWaypoints = generateJourney(selection);
       const journeyId = journeyWaypoints[0].details.packageId;
 
-      // Start new journey (concurrent with any existing journeys)
-      startJourney(
-        journeyId,
-        journeyWaypoints,
+      // Register in global context first (for AdminDashboard to see it)
+      const journey = {
+        id: journeyId,
+        waypoints: journeyWaypoints.map((w) => ({
+          ...w,
+          status: w.id === 1 ? ('active' as const) : ('pending' as const),
+        })),
+        currentStage: 1,
+        status: 'active' as const,
+        startedAt: Date.now(),
         type,
-        {
+        metadata: {
           governorate: selection.governorate.name,
           program: selection.program.name,
           familyId: selection.family.id,
-          familyProfile: selection.family.profile
-        }
-      );
+          familyProfile: selection.family.profile,
+        },
+      };
+      registerJourney(journey);
+
+      // Start local progression (for map visualization)
+      startJourney(journeyId, journeyWaypoints, type, {
+        governorate: selection.governorate.name,
+        program: selection.program.name,
+        familyId: selection.family.id,
+        familyProfile: selection.family.profile,
+      });
 
       console.log(`🎯 New journey started: ${journeyId}`);
     } catch (error) {
@@ -120,7 +141,7 @@ function DonationTracker() {
     .map((w) => w.id);
 
   const createPathGeoJSON = () => {
-    if (activeWaypointIds.length < 2) return null;
+    if (activeWaypointIds.length < 2) {return null;}
 
     const activePoints = waypoints
       .filter((w) => activeWaypointIds.includes(w.id))
@@ -142,10 +163,10 @@ function DonationTracker() {
 
   const handleWaypointClick = useCallback(
     (clickedId: number, journeyId?: string) => {
-      const clickedWaypoint = waypoints.find((w) =>
-        w.id === clickedId && (!journeyId || w.journeyId === journeyId)
+      const clickedWaypoint = waypoints.find(
+        (w) => w.id === clickedId && (!journeyId || w.journeyId === journeyId)
       );
-      if (!clickedWaypoint) return;
+      if (!clickedWaypoint) {return;}
 
       setActiveWaypoint(clickedWaypoint);
 
@@ -153,7 +174,7 @@ function DonationTracker() {
         mapRef.current.flyTo({
           center: clickedWaypoint.coordinates,
           zoom: 10,
-          duration: 1500
+          duration: 1500,
         });
       }
     },
@@ -237,7 +258,10 @@ function DonationTracker() {
 
       <DonationInfoPanel waypoint={activeWaypoint} />
 
-      <WaypointControlCard waypoints={waypoints} onWaypointClick={(id) => handleWaypointClick(id)} />
+      <WaypointControlCard
+        waypoints={waypoints}
+        onWaypointClick={(id) => handleWaypointClick(id)}
+      />
 
       <MobileDrawer
         waypoints={waypoints}
@@ -253,7 +277,7 @@ function DonationTracker() {
           state.journeys.length > 0
             ? {
                 id: `${state.activeCount} active, ${state.completedCount} completed`,
-                stage: state.journeys[0]?.currentStage || 0
+                stage: state.journeys[0]?.currentStage || 0,
               }
             : null
         }
@@ -270,7 +294,7 @@ function DonationTracker() {
           alt="Egyptian Food Bank"
           className="h-12 w-auto"
           style={{
-            filter: 'drop-shadow(0 4px 12px rgba(0, 217, 255, 0.3))'
+            filter: 'drop-shadow(0 4px 12px rgba(0, 217, 255, 0.3))',
           }}
         />
       </motion.div>
@@ -297,7 +321,8 @@ function DonationTracker() {
           </div>
           <div className="w-px h-4 bg-cyan-500/30" />
           <div className="text-white/70">
-            Total: <span className="text-white font-semibold">
+            Total:{' '}
+            <span className="text-white font-semibold">
               {state.totalCount + getAllActiveJourneys().length + getAllCompletedJourneys().length}
             </span>
           </div>
@@ -321,13 +346,58 @@ function App() {
     <>
       <JourneyProgressionManager />
       <Routes>
-        <Route path="/" element={<DonationTracker />} />
-        <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/donors" element={<MockPaymentGateway />} />
-        <Route path="/sms" element={<MockSMSInbox />} />
-        <Route path="/journey/:trackingId" element={<JourneyViewer />} />
+        <Route
+          path="/"
+          element={
+            <ErrorBoundary fallback={<ErrorFallback context="map" />}>
+              <DonationTracker />
+            </ErrorBoundary>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <ErrorBoundary fallback={<ErrorFallback context="admin" />}>
+              <AdminDashboard />
+            </ErrorBoundary>
+          }
+        />
+        <Route
+          path="/donors"
+          element={
+            <ErrorBoundary fallback={<ErrorFallback context="payment" />}>
+              <MockPaymentGateway />
+            </ErrorBoundary>
+          }
+        />
+        <Route
+          path="/sms"
+          element={
+            <ErrorBoundary fallback={<ErrorFallback context="sms" />}>
+              <MockSMSInbox />
+            </ErrorBoundary>
+          }
+        />
+        <Route
+          path="/journey/:trackingId"
+          element={
+            <ErrorBoundary fallback={<ErrorFallback context="journey" />}>
+              <JourneyViewer />
+            </ErrorBoundary>
+          }
+        />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        {import.meta.env.DEV && (
+          <Route
+            path="/error-test"
+            element={
+              <ErrorBoundary>
+                <ErrorTest />
+              </ErrorBoundary>
+            }
+          />
+        )}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </>

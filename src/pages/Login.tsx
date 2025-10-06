@@ -13,7 +13,7 @@ import { Mail, Lock, Eye, EyeOff, Loader2, LogIn } from 'lucide-react';
 export function Login() {
   const [formData, setFormData] = useState({
     email: '',
-    password: ''
+    password: '',
   });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -36,17 +36,17 @@ export function Login() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
     // Clear error when user starts typing
-    if (error) setError(null);
+    if (error) {setError(null);}
   };
 
   const validateForm = () => {
-    if (!formData.email) return 'Email is required';
-    if (!formData.password) return 'Password is required';
+    if (!formData.email) {return 'Email is required';}
+    if (!formData.password) {return 'Password is required';}
     return null;
   };
 
@@ -201,7 +201,10 @@ export function Login() {
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-600">
             Don't have an account?{' '}
-            <Link to="/register" className="font-medium text-cyan-600 hover:text-cyan-500 transition-colors">
+            <Link
+              to="/register"
+              className="font-medium text-cyan-600 hover:text-cyan-500 transition-colors"
+            >
               Create account
             </Link>
           </p>

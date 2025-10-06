@@ -6,7 +6,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import Map, { Source, Layer, MapRef } from 'react-map-gl/mapbox';
+import Map, { Source, Layer, MapRef } from 'react-map-gl';
 import mapboxgl from 'mapbox-gl';
 import { Package, Users, ArrowLeft, AlertCircle, X } from 'lucide-react';
 import { useGlobalSettings } from '../contexts/GlobalSettingsContext';
@@ -56,16 +56,22 @@ export default function JourneyViewer() {
   // Fit map to journey bounds
   useEffect(() => {
     if (journey && mapRef.current) {
-      const coordinates = journey.waypoints.map(w => w.coordinates);
+      const coordinates = journey.waypoints.map((w) => w.coordinates);
 
       if (coordinates.length > 0) {
-        const bounds = coordinates.reduce((bounds, coord) => {
-          return bounds.extend(coord as [number, number]);
-        }, new mapboxgl.LngLatBounds(coordinates[0] as [number, number], coordinates[0] as [number, number]));
+        const bounds = coordinates.reduce(
+          (bounds, coord) => {
+            return bounds.extend(coord as [number, number]);
+          },
+          new mapboxgl.LngLatBounds(
+            coordinates[0] as [number, number],
+            coordinates[0] as [number, number]
+          )
+        );
 
         mapRef.current.fitBounds(bounds, {
           padding: { top: 100, bottom: 100, left: 100, right: 100 },
-          duration: 1000
+          duration: 1000,
         });
       }
     }
@@ -82,7 +88,8 @@ export default function JourneyViewer() {
           <AlertCircle className="w-24 h-24 text-red-400 mx-auto mb-6" />
           <h1 className="text-4xl font-bold mb-4">Journey Not Found</h1>
           <p className="text-gray-400 mb-8">
-            Tracking ID <span className="font-mono text-white">{trackingId}</span> does not exist or has been removed.
+            Tracking ID <span className="font-mono text-white">{trackingId}</span> does not exist or
+            has been removed.
           </p>
           <button
             onClick={() => navigate('/')}
@@ -107,12 +114,12 @@ export default function JourneyViewer() {
     );
   }
 
-  const completedWaypoints = journey.waypoints.filter(w => w.status === 'completed');
-  const activeWaypoint = journey.waypoints.find(w => w.status === 'active');
+  const completedWaypoints = journey.waypoints.filter((w) => w.status === 'completed');
+  const activeWaypoint = journey.waypoints.find((w) => w.status === 'active');
   const progress = (completedWaypoints.length / journey.waypoints.length) * 100;
 
   // Create line for journey path
-  const completedCoordinates = completedWaypoints.map(w => w.coordinates);
+  const completedCoordinates = completedWaypoints.map((w) => w.coordinates);
   if (activeWaypoint) {
     completedCoordinates.push(activeWaypoint.coordinates);
   }
@@ -122,8 +129,8 @@ export default function JourneyViewer() {
     properties: {},
     geometry: {
       type: 'LineString',
-      coordinates: completedCoordinates
-    }
+      coordinates: completedCoordinates,
+    },
   };
 
   return (
@@ -135,7 +142,7 @@ export default function JourneyViewer() {
         initialViewState={{
           longitude: 31.5,
           latitude: 27.0,
-          zoom: 6
+          zoom: 6,
         }}
         style={{ width: '100%', height: '100%' }}
         mapStyle="mapbox://styles/mapbox/dark-v11"
@@ -149,7 +156,7 @@ export default function JourneyViewer() {
               paint={{
                 'line-color': '#06b6d4',
                 'line-width': 4,
-                'line-opacity': 0.8
+                'line-opacity': 0.8,
               }}
             />
             <Layer
@@ -159,7 +166,7 @@ export default function JourneyViewer() {
                 'line-color': '#06b6d4',
                 'line-width': 12,
                 'line-opacity': 0.3,
-                'line-blur': 8
+                'line-blur': 8,
               }}
             />
           </Source>
@@ -232,11 +239,15 @@ export default function JourneyViewer() {
 
         {/* Status Badge */}
         <div className="p-4 border-b border-cyan-500/20">
-          <div className={`inline-flex px-3 py-1 rounded-full border text-sm font-semibold ${
-            journey.status === 'completed' ? 'bg-green-500/20 border-green-500/50 text-green-400' :
-            journey.status === 'active' ? 'bg-yellow-500/20 border-yellow-500/50 text-yellow-400' :
-            'bg-gray-500/20 border-gray-500/50 text-gray-400'
-          }`}>
+          <div
+            className={`inline-flex px-3 py-1 rounded-full border text-sm font-semibold ${
+              journey.status === 'completed'
+                ? 'bg-green-500/20 border-green-500/50 text-green-400'
+                : journey.status === 'active'
+                  ? 'bg-yellow-500/20 border-yellow-500/50 text-yellow-400'
+                  : 'bg-gray-500/20 border-gray-500/50 text-gray-400'
+            }`}
+          >
             {journey.status.toUpperCase()}
           </div>
         </div>
@@ -253,11 +264,15 @@ export default function JourneyViewer() {
             <div className="grid grid-cols-2 gap-3 text-sm">
               <div>
                 <div className="text-xs text-gray-500 mb-1">Donor</div>
-                <div className="font-semibold text-white">{(journey.metadata as any).donorName || 'Anonymous'}</div>
+                <div className="font-semibold text-white">
+                  {(journey.metadata as any).donorName || 'Anonymous'}
+                </div>
               </div>
               <div>
                 <div className="text-xs text-gray-500 mb-1">Amount</div>
-                <div className="font-semibold text-green-400">${(journey.metadata as any).amount || 0}</div>
+                <div className="font-semibold text-green-400">
+                  ${(journey.metadata as any).amount || 0}
+                </div>
               </div>
               <div>
                 <div className="text-xs text-gray-500 mb-1">Governorate</div>
@@ -278,11 +293,15 @@ export default function JourneyViewer() {
                 <div className="flex items-center gap-4 text-xs">
                   <div className="flex items-center gap-1">
                     <Package className="w-3 h-3 text-gray-400" />
-                    <span className="text-gray-300">{activeWaypoint.details.quantity} packages</span>
+                    <span className="text-gray-300">
+                      {activeWaypoint.details.quantity} packages
+                    </span>
                   </div>
                   <div className="flex items-center gap-1">
                     <Users className="w-3 h-3 text-gray-400" />
-                    <span className="text-gray-300">{activeWaypoint.details.beneficiaries} people</span>
+                    <span className="text-gray-300">
+                      {activeWaypoint.details.beneficiaries} people
+                    </span>
                   </div>
                 </div>
               </div>
@@ -297,18 +316,24 @@ export default function JourneyViewer() {
                     key={waypoint.id}
                     id={`waypoint-${waypoint.id}`}
                     className={`p-2 rounded-lg border text-sm ${
-                      waypoint.status === 'completed' ? 'bg-green-500/10 border-green-500/30' :
-                      waypoint.status === 'active' ? 'bg-yellow-500/10 border-yellow-500/30' :
-                      'bg-gray-800/30 border-gray-700'
+                      waypoint.status === 'completed'
+                        ? 'bg-green-500/10 border-green-500/30'
+                        : waypoint.status === 'active'
+                          ? 'bg-yellow-500/10 border-yellow-500/30'
+                          : 'bg-gray-800/30 border-gray-700'
                     }`}
                   >
                     <div className="flex items-center gap-2">
                       <div
                         className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold"
                         style={{
-                          backgroundColor: waypoint.status === 'completed' ? '#00ff9f' :
-                                         waypoint.status === 'active' ? '#00d9ff' : '#1a1a1a',
-                          color: waypoint.status === 'pending' ? '#666' : '#000'
+                          backgroundColor:
+                            waypoint.status === 'completed'
+                              ? '#00ff9f'
+                              : waypoint.status === 'active'
+                                ? '#00d9ff'
+                                : '#1a1a1a',
+                          color: waypoint.status === 'pending' ? '#666' : '#000',
                         }}
                       >
                         {index + 1}

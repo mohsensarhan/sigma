@@ -17,7 +17,11 @@ interface AdminPanelProps {
   activeDonation: { id: string; stage: number } | null;
 }
 
-export default function AdminPanel({ onTriggerDonation, onClearSystem, activeDonation }: AdminPanelProps) {
+export default function AdminPanel({
+  onTriggerDonation,
+  onClearSystem,
+  activeDonation,
+}: AdminPanelProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedGovernorate, setSelectedGovernorate] = useState('');
   const [selectedProgram, setSelectedProgram] = useState('');
@@ -27,10 +31,7 @@ export default function AdminPanel({ onTriggerDonation, onClearSystem, activeDon
   // Load governorates and programs from Supabase (or mock data fallback)
   useEffect(() => {
     async function loadData() {
-      const [govs, progs] = await Promise.all([
-        getAllGovernorates(),
-        getAllPrograms()
-      ]);
+      const [govs, progs] = await Promise.all([getAllGovernorates(), getAllPrograms()]);
       setGovernorates(govs);
       setPrograms(progs);
     }
@@ -138,9 +139,7 @@ export default function AdminPanel({ onTriggerDonation, onClearSystem, activeDon
                       Active Donation
                     </div>
                     <div className="text-sm font-mono text-white">{activeDonation.id}</div>
-                    <div className="text-xs text-gray-400 mt-1">
-                      Stage {activeDonation.stage}/5
-                    </div>
+                    <div className="text-xs text-gray-400 mt-1">Stage {activeDonation.stage}/5</div>
                     <div className="mt-2 h-2 bg-black/50 rounded-full overflow-hidden">
                       <motion.div
                         className="h-full rounded-full"
@@ -241,8 +240,7 @@ export default function AdminPanel({ onTriggerDonation, onClearSystem, activeDon
                             ? 'linear-gradient(135deg, #00ff9f, #00d9ff)'
                             : 'rgba(26, 26, 26, 0.5)',
                         color: !activeDonation && selectedGovernorate ? '#000' : '#666',
-                        cursor:
-                          activeDonation || !selectedGovernorate ? 'not-allowed' : 'pointer',
+                        cursor: activeDonation || !selectedGovernorate ? 'not-allowed' : 'pointer',
                       }}
                       whileHover={!activeDonation && selectedGovernorate ? { scale: 1.02 } : {}}
                       whileTap={!activeDonation && selectedGovernorate ? { scale: 0.98 } : {}}
@@ -314,7 +312,11 @@ export default function AdminPanel({ onTriggerDonation, onClearSystem, activeDon
                 <div className="mt-6 pt-4 border-t border-red-500/20">
                   <motion.button
                     onClick={() => {
-                      if (window.confirm('Are you sure you want to clear all donations and reset the system?')) {
+                      if (
+                        window.confirm(
+                          'Are you sure you want to clear all donations and reset the system?'
+                        )
+                      ) {
                         onClearSystem();
                         setSelectedGovernorate('');
                         setSelectedProgram('');

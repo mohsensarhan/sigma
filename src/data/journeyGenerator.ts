@@ -21,12 +21,7 @@ import { getAnchor } from './dataService';
 /**
  * Calculate distance between two coordinates (Haversine formula)
  */
-function calculateDistance(
-  lon1: number,
-  lat1: number,
-  lon2: number,
-  lat2: number
-): number {
+function calculateDistance(lon1: number, lat1: number, lon2: number, lat2: number): number {
   const R = 6371; // Earth radius in km
   const dLat = ((lat2 - lat1) * Math.PI) / 180;
   const dLon = ((lon2 - lon1) * Math.PI) / 180;
@@ -74,12 +69,7 @@ export function generateJourney(selection: SelectionResult): Waypoint[] {
   const trackingToken = generateTrackingToken();
 
   // Standard package items for all donations (can be customized later)
-  const standardItems = [
-    'Rice (25kg)',
-    'Cooking Oil (10L)',
-    'Lentils (15kg)',
-    'Sugar (10kg)',
-  ];
+  const standardItems = ['Rice (25kg)', 'Cooking Oil (10L)', 'Lentils (15kg)', 'Sugar (10kg)'];
 
   // ============================================================================
   // STAGE 1: Received at EFB HQ New Cairo
@@ -189,12 +179,7 @@ export function generateJourney(selection: SelectionResult): Waypoint[] {
   // ============================================================================
   // STAGE 5: Delivered to Family
   // ============================================================================
-  const distanceStage4to5 = calculateDistance(
-    village.lon,
-    village.lat,
-    village.lon,
-    village.lat
-  ); // Same location for delivery
+  const distanceStage4to5 = calculateDistance(village.lon, village.lat, village.lon, village.lat); // Same location for delivery
 
   const stage5: Waypoint = {
     id: 5,

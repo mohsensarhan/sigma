@@ -6,19 +6,37 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, Check, X, Clock, ChevronDown, ChevronUp } from 'lucide-react';
-import { getAllSMS, getSMSStats, SMSMessage } from '../services/mockSMS';
+import { getAllSMSAsync, getSMSStats, SMSMessage } from '../services/mockSMS';
 
 export default function SMSLogsPanel() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<SMSMessage[]>([]);
-  const [stats, setStats] = useState(getSMSStats());
+  const [stats, setStats] = useState({
+    total: 0,
+    queued: 0,
+    sent: 0,
+    delivered: 0,
+    failed: 0,
+    deliveryRate: 0,
+  });
 
-  // Refresh SMS logs every 1 second
+  // Refresh SMS logs from Supabase every 3 seconds
   useEffect(() => {
-    const interval = setInterval(() => {
-      setMessages(getAllSMS());
-      setStats(getSMSStats());
-    }, 1000);
+    async function fetchSMSData() {
+      try {
+        const [messagesData, statsData] = await Promise.all([getAllSMSAsync(), getSMSStats()]);
+        setMessages(messagesData);
+        setStats(statsData);
+      } catch (error) {
+        console.error('Error fetching SMS data:', error);
+      }
+    }
+
+    // Initial fetch
+    fetchSMSData();
+
+    // Set up interval for periodic refresh
+    const interval = setInterval(fetchSMSData, 3000); // 3 seconds to reduce load
 
     return () => clearInterval(interval);
   }, []);
@@ -38,19 +56,27 @@ export default function SMSLogsPanel() {
 
   const getStatusColor = (status: SMSMessage['status']) => {
     switch (status) {
-      case 'delivered': return 'rgba(0, 255, 159, 0.1)';
-      case 'sent': return 'rgba(0, 217, 255, 0.1)';
-      case 'queued': return 'rgba(255, 193, 7, 0.1)';
-      case 'failed': return 'rgba(239, 68, 68, 0.1)';
+      case 'delivered':
+        return 'rgba(0, 255, 159, 0.1)';
+      case 'sent':
+        return 'rgba(0, 217, 255, 0.1)';
+      case 'queued':
+        return 'rgba(255, 193, 7, 0.1)';
+      case 'failed':
+        return 'rgba(239, 68, 68, 0.1)';
     }
   };
 
   const getStatusBorderColor = (status: SMSMessage['status']) => {
     switch (status) {
-      case 'delivered': return 'rgba(0, 255, 159, 0.3)';
-      case 'sent': return 'rgba(0, 217, 255, 0.3)';
-      case 'queued': return 'rgba(255, 193, 7, 0.3)';
-      case 'failed': return 'rgba(239, 68, 68, 0.3)';
+      case 'delivered':
+        return 'rgba(0, 255, 159, 0.3)';
+      case 'sent':
+        return 'rgba(0, 217, 255, 0.3)';
+      case 'queued':
+        return 'rgba(255, 193, 7, 0.3)';
+      case 'failed':
+        return 'rgba(239, 68, 68, 0.3)';
     }
   };
 
@@ -70,7 +96,9 @@ export default function SMSLogsPanel() {
         <MessageSquare className="w-5 h-5 text-cyan-400" />
         <div className="text-left">
           <div className="text-sm font-semibold text-white">SMS Logs</div>
-          <div className="text-xs text-cyan-400">{stats.total} sent · {stats.delivered} delivered</div>
+          <div className="text-xs text-cyan-400">
+            {stats.total} sent · {stats.delivered} delivered
+          </div>
         </div>
         {isOpen ? (
           <ChevronDown className="w-4 h-4 text-gray-400" />
@@ -93,11 +121,13 @@ export default function SMSLogsPanel() {
             }}
           >
             {/* Stats Header */}
-            <div className="sticky top-0 p-4 border-b backdrop-blur-md"
+            <div
+              className="sticky top-0 p-4 border-b backdrop-blur-md"
               style={{
                 background: 'rgba(0, 0, 0, 0.95)',
-                borderColor: 'rgba(0, 217, 255, 0.2)'
-              }}>
+                borderColor: 'rgba(0, 217, 255, 0.2)',
+              }}
+            >
               <div className="flex items-center justify-between mb-3">
                 <div className="text-xs text-cyan-400 uppercase tracking-wide font-bold">
                   SMS Delivery Stats
@@ -108,19 +138,31 @@ export default function SMSLogsPanel() {
               </div>
 
               <div className="grid grid-cols-4 gap-2 text-xs">
-                <div className="text-center p-2 rounded-lg" style={{ background: 'rgba(0, 217, 255, 0.1)' }}>
+                <div
+                  className="text-center p-2 rounded-lg"
+                  style={{ background: 'rgba(0, 217, 255, 0.1)' }}
+                >
                   <div className="text-cyan-400 font-semibold">{stats.queued}</div>
                   <div className="text-gray-400">Queued</div>
                 </div>
-                <div className="text-center p-2 rounded-lg" style={{ background: 'rgba(0, 217, 255, 0.1)' }}>
+                <div
+                  className="text-center p-2 rounded-lg"
+                  style={{ background: 'rgba(0, 217, 255, 0.1)' }}
+                >
                   <div className="text-cyan-400 font-semibold">{stats.sent}</div>
                   <div className="text-gray-400">Sent</div>
                 </div>
-                <div className="text-center p-2 rounded-lg" style={{ background: 'rgba(0, 255, 159, 0.1)' }}>
+                <div
+                  className="text-center p-2 rounded-lg"
+                  style={{ background: 'rgba(0, 255, 159, 0.1)' }}
+                >
                   <div className="text-green-400 font-semibold">{stats.delivered}</div>
                   <div className="text-gray-400">Delivered</div>
                 </div>
-                <div className="text-center p-2 rounded-lg" style={{ background: 'rgba(239, 68, 68, 0.1)' }}>
+                <div
+                  className="text-center p-2 rounded-lg"
+                  style={{ background: 'rgba(239, 68, 68, 0.1)' }}
+                >
                   <div className="text-red-400 font-semibold">{stats.failed}</div>
                   <div className="text-gray-400">Failed</div>
                 </div>
@@ -130,9 +172,7 @@ export default function SMSLogsPanel() {
             {/* Messages List */}
             <div className="p-4 space-y-2">
               {messages.length === 0 ? (
-                <div className="text-center py-8 text-gray-500 text-sm">
-                  No SMS messages yet
-                </div>
+                <div className="text-center py-8 text-gray-500 text-sm">No SMS messages yet</div>
               ) : (
                 messages.map((msg) => (
                   <motion.div
@@ -154,9 +194,7 @@ export default function SMSLogsPanel() {
                             {new Date(msg.timestamp).toLocaleTimeString()}
                           </div>
                         </div>
-                        <div className="text-xs text-white leading-relaxed">
-                          {msg.body}
-                        </div>
+                        <div className="text-xs text-white leading-relaxed">{msg.body}</div>
                         {msg.journeyId && (
                           <div className="mt-1 text-xs text-cyan-400 font-mono">
                             Journey: {msg.journeyId} · Stage {msg.stage}/5

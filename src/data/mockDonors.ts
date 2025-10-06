@@ -28,7 +28,7 @@ export const MOCK_DONORS: MockDonor[] = [
     avatar: '👨',
     defaultAmount: 50,
     totalDonated: 0,
-    donationCount: 0
+    donationCount: 0,
   },
   {
     id: 2,
@@ -38,7 +38,7 @@ export const MOCK_DONORS: MockDonor[] = [
     avatar: '👩',
     defaultAmount: 100,
     totalDonated: 0,
-    donationCount: 0
+    donationCount: 0,
   },
   {
     id: 3,
@@ -48,7 +48,7 @@ export const MOCK_DONORS: MockDonor[] = [
     avatar: '🧔',
     defaultAmount: 25,
     totalDonated: 0,
-    donationCount: 0
+    donationCount: 0,
   },
   {
     id: 4,
@@ -58,8 +58,8 @@ export const MOCK_DONORS: MockDonor[] = [
     avatar: '👩‍🦱',
     defaultAmount: 75,
     totalDonated: 0,
-    donationCount: 0
-  }
+    donationCount: 0,
+  },
 ];
 
 // Donation history (in-memory storage)
@@ -82,7 +82,7 @@ export function recordDonation(
   trackingId: string,
   amount: number
 ): DonationRecord {
-  const donor = MOCK_DONORS.find(d => d.id === donorId);
+  const donor = MOCK_DONORS.find((d) => d.id === donorId);
   if (!donor) {
     throw new Error(`Donor ${donorId} not found`);
   }
@@ -93,7 +93,7 @@ export function recordDonation(
     amount,
     timestamp: Date.now(),
     donorName: donor.name,
-    status: 'pending'
+    status: 'pending',
   };
 
   donationHistory.unshift(record); // Add to beginning
@@ -105,7 +105,7 @@ export function recordDonation(
   donor.lastDonation = {
     trackingId,
     amount,
-    timestamp: record.timestamp
+    timestamp: record.timestamp,
   };
 
   console.log(`💰 Donation recorded: ${donor.name} donated $${amount} → ${trackingId}`);
@@ -117,7 +117,7 @@ export function recordDonation(
  * Update donation status
  */
 export function updateDonationStatus(trackingId: string, status: DonationRecord['status']): void {
-  const donation = donationHistory.find(d => d.trackingId === trackingId);
+  const donation = donationHistory.find((d) => d.trackingId === trackingId);
   if (donation) {
     donation.status = status;
     console.log(`📊 Donation ${trackingId} status: ${status}`);
@@ -135,21 +135,21 @@ export function getDonationHistory(): DonationRecord[] {
  * Get donations by donor
  */
 export function getDonationsByDonor(donorId: number): DonationRecord[] {
-  return donationHistory.filter(d => d.donorId === donorId);
+  return donationHistory.filter((d) => d.donorId === donorId);
 }
 
 /**
  * Get donor by phone
  */
 export function getDonorByPhone(phone: string): MockDonor | undefined {
-  return MOCK_DONORS.find(d => d.phone === phone);
+  return MOCK_DONORS.find((d) => d.phone === phone);
 }
 
 /**
  * Get donor by ID
  */
 export function getDonorById(id: number): MockDonor | undefined {
-  return MOCK_DONORS.find(d => d.id === id);
+  return MOCK_DONORS.find((d) => d.id === id);
 }
 
 /**
@@ -160,18 +160,18 @@ export function getDonationStats() {
   const count = donationHistory.length;
   const average = count > 0 ? total / count : 0;
 
-  const byDonor = MOCK_DONORS.map(donor => ({
+  const byDonor = MOCK_DONORS.map((donor) => ({
     name: donor.name,
     total: donor.totalDonated,
     count: donor.donationCount,
-    average: donor.donationCount > 0 ? donor.totalDonated / donor.donationCount : 0
+    average: donor.donationCount > 0 ? donor.totalDonated / donor.donationCount : 0,
   }));
 
   return {
     total,
     count,
     average,
-    byDonor
+    byDonor,
   };
 }
 
@@ -180,7 +180,7 @@ export function getDonationStats() {
  */
 export function clearDonationHistory(): void {
   donationHistory = [];
-  MOCK_DONORS.forEach(donor => {
+  MOCK_DONORS.forEach((donor) => {
     donor.totalDonated = 0;
     donor.donationCount = 0;
     donor.lastDonation = undefined;

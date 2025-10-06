@@ -7,14 +7,24 @@ interface DonationInfoPanelProps {
 }
 
 export default function DonationInfoPanel({ waypoint }: DonationInfoPanelProps) {
-  if (!waypoint) return null;
+  if (!waypoint) {return null;}
 
-  const InfoRow = ({ label, value, icon: Icon }: { label: string; value: string | number; icon: any }) => (
+  const InfoRow = ({
+    label,
+    value,
+    icon: Icon,
+  }: {
+    label: string;
+    value: string | number;
+    icon: any;
+  }) => (
     <div className="flex items-center gap-1.5 py-0.5 border-b border-cyan-500/10">
       <Icon className="w-3 h-3 text-cyan-400 flex-shrink-0" />
       <div className="flex-1 min-w-0">
         <div className="text-[9px] text-gray-400 uppercase tracking-wide leading-none">{label}</div>
-        <div className="text-[11px] text-white font-mono leading-none mt-0.5 break-words">{value}</div>
+        <div className="text-[11px] text-white font-mono leading-none mt-0.5 break-words">
+          {value}
+        </div>
       </div>
     </div>
   );
@@ -54,19 +64,31 @@ export default function DonationInfoPanel({ waypoint }: DonationInfoPanelProps) 
                   {waypoint.id}
                 </div>
                 <div className="flex-1">
-                  <div className="text-[9px] text-cyan-400 uppercase tracking-wide leading-none">{waypoint.stage}</div>
-                  <div className="text-sm font-bold text-white leading-none mt-0.5">{waypoint.name}</div>
+                  <div className="text-[9px] text-cyan-400 uppercase tracking-wide leading-none">
+                    {waypoint.stage}
+                  </div>
+                  <div className="text-sm font-bold text-white leading-none mt-0.5">
+                    {waypoint.name}
+                  </div>
                 </div>
               </div>
 
               <div className="space-y-0">
                 <InfoRow label="Location" value={waypoint.location} icon={MapPin} />
                 <InfoRow label="Package ID" value={waypoint.details.packageId} icon={Package} />
-                <InfoRow label="Beneficiaries" value={`${waypoint.details.beneficiaries} families`} icon={Users} />
-                
+                <InfoRow
+                  label="Beneficiaries"
+                  value={`${waypoint.details.beneficiaries} families`}
+                  icon={Users}
+                />
+
                 {/* Show family profile if available */}
                 {waypoint.details.familyProfile && (
-                  <InfoRow label="Family Profile" value={waypoint.details.familyProfile} icon={User} />
+                  <InfoRow
+                    label="Family Profile"
+                    value={waypoint.details.familyProfile}
+                    icon={User}
+                  />
                 )}
 
                 {waypoint.details.distanceFromPrevious && (
@@ -78,8 +100,13 @@ export default function DonationInfoPanel({ waypoint }: DonationInfoPanelProps) 
                 )}
               </div>
 
-              <div className="mt-1.5 p-1.5 rounded-lg" style={{ background: 'rgba(0, 217, 255, 0.05)' }}>
-                <div className="text-[9px] text-gray-400 uppercase tracking-wide mb-0.5 leading-none">Package Contents</div>
+              <div
+                className="mt-1.5 p-1.5 rounded-lg"
+                style={{ background: 'rgba(0, 217, 255, 0.05)' }}
+              >
+                <div className="text-[9px] text-gray-400 uppercase tracking-wide mb-0.5 leading-none">
+                  Package Contents
+                </div>
                 <div className="flex flex-wrap gap-1">
                   {waypoint.details.items.map((item, idx) => (
                     <div

@@ -18,7 +18,7 @@ export default function AdminDashboard() {
     getErrorLogs,
     getAllActiveJourneys,
     getAllCompletedJourneys,
-    clearAllJourneys
+    clearAllJourneys,
   } = useGlobalSettings();
 
   const [stepDurationInput, setStepDurationInput] = useState(settings.stepDuration / 1000);
@@ -37,11 +37,7 @@ export default function AdminDashboard() {
   return (
     <div className="scrollable-page min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white p-8">
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="mb-8"
-      >
+      <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
         <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-cyan-400 to-green-400 bg-clip-text text-transparent">
           Admin Dashboard
         </h1>
@@ -130,7 +126,7 @@ export default function AdminDashboard() {
         {activeJourneys.length > 0 && (
           <div className="space-y-2">
             <h3 className="text-sm font-semibold text-gray-400 mb-2">Active Journeys:</h3>
-            {activeJourneys.map(journey => (
+            {activeJourneys.map((journey) => (
               <div
                 key={journey.id}
                 className="p-3 bg-gray-800/50 rounded-lg border border-gray-700 flex items-center justify-between"
@@ -139,9 +135,7 @@ export default function AdminDashboard() {
                   <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
                   <span className="font-mono text-sm">{journey.id}</span>
                 </div>
-                <div className="text-sm text-gray-400">
-                  Stage {journey.currentStage}/5
-                </div>
+                <div className="text-sm text-gray-400">Stage {journey.currentStage}/5</div>
               </div>
             ))}
           </div>
@@ -222,15 +216,15 @@ export default function AdminDashboard() {
               <p>No logs yet</p>
             </div>
           ) : (
-            errorLogs.map(log => (
+            errorLogs.map((log) => (
               <div
                 key={log.id}
                 className={`p-3 rounded-lg border ${
                   log.level === 'error'
                     ? 'bg-red-500/10 border-red-500/30'
                     : log.level === 'warning'
-                    ? 'bg-yellow-500/10 border-yellow-500/30'
-                    : 'bg-blue-500/10 border-blue-500/30'
+                      ? 'bg-yellow-500/10 border-yellow-500/30'
+                      : 'bg-blue-500/10 border-blue-500/30'
                 }`}
               >
                 <div className="flex items-start justify-between mb-1">
@@ -240,8 +234,8 @@ export default function AdminDashboard() {
                         log.level === 'error'
                           ? 'text-red-400'
                           : log.level === 'warning'
-                          ? 'text-yellow-400'
-                          : 'text-blue-400'
+                            ? 'text-yellow-400'
+                            : 'text-blue-400'
                       }`}
                     >
                       {log.level}

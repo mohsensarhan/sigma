@@ -9,7 +9,11 @@
       "Bash(cat:*)",
       "Bash(git push:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(lsof:*)",
+      "Bash(curl:*)",
+      "Bash(xargs kill:*)",
+      "Bash(netstat:*)"
     ],
     "deny": [],
     "ask": []

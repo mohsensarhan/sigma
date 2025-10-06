@@ -42,7 +42,7 @@ export async function createJourneyHandler(event: APIGatewayEvent): Promise<Lamb
     if (!event.body) {
       return {
         statusCode: 400,
-        body: JSON.stringify({ error: 'Missing request body' })
+        body: JSON.stringify({ error: 'Missing request body' }),
       };
     }
 
@@ -56,7 +56,7 @@ export async function createJourneyHandler(event: APIGatewayEvent): Promise<Lamb
       journeyId: journey.id,
       timestamp: Date.now(),
       event: 'JOURNEY_CREATED',
-      data: journey
+      data: journey,
     });
 
     console.log(`[Lambda:createJourney] Created journey ${journey.id}`);
@@ -67,14 +67,14 @@ export async function createJourneyHandler(event: APIGatewayEvent): Promise<Lamb
       body: JSON.stringify({
         success: true,
         journeyId: journey.id,
-        message: 'Journey created successfully'
-      })
+        message: 'Journey created successfully',
+      }),
     };
   } catch (error: any) {
     console.error('[Lambda:createJourney] Error:', error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: error.message })
+      body: JSON.stringify({ error: error.message }),
     };
   }
 }
@@ -90,7 +90,7 @@ export async function getJourneyHandler(event: APIGatewayEvent): Promise<LambdaR
     if (!journeyId) {
       return {
         statusCode: 400,
-        body: JSON.stringify({ error: 'Missing journey ID' })
+        body: JSON.stringify({ error: 'Missing journey ID' }),
       };
     }
 
@@ -99,20 +99,20 @@ export async function getJourneyHandler(event: APIGatewayEvent): Promise<LambdaR
     if (!journey) {
       return {
         statusCode: 404,
-        body: JSON.stringify({ error: 'Journey not found' })
+        body: JSON.stringify({ error: 'Journey not found' }),
       };
     }
 
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(journey)
+      body: JSON.stringify(journey),
     };
   } catch (error: any) {
     console.error('[Lambda:getJourney] Error:', error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: error.message })
+      body: JSON.stringify({ error: error.message }),
     };
   }
 }
@@ -129,7 +129,7 @@ export async function updateJourneyStageHandler(event: APIGatewayEvent): Promise
     if (!journeyId || !stage) {
       return {
         statusCode: 400,
-        body: JSON.stringify({ error: 'Missing journey ID or stage' })
+        body: JSON.stringify({ error: 'Missing journey ID or stage' }),
       };
     }
 
@@ -138,7 +138,7 @@ export async function updateJourneyStageHandler(event: APIGatewayEvent): Promise
     if (!journey) {
       return {
         statusCode: 404,
-        body: JSON.stringify({ error: 'Journey not found' })
+        body: JSON.stringify({ error: 'Journey not found' }),
       };
     }
 
@@ -157,7 +157,7 @@ export async function updateJourneyStageHandler(event: APIGatewayEvent): Promise
       journeyId,
       timestamp: Date.now(),
       event: `STAGE_${stage}_COMPLETED`,
-      data: { stage, status: journey.status }
+      data: { stage, status: journey.status },
     });
 
     console.log(`[Lambda:updateStage] Journey ${journeyId} → Stage ${stage}`);
@@ -167,14 +167,14 @@ export async function updateJourneyStageHandler(event: APIGatewayEvent): Promise
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         success: true,
-        journey
-      })
+        journey,
+      }),
     };
   } catch (error: any) {
     console.error('[Lambda:updateStage] Error:', error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: error.message })
+      body: JSON.stringify({ error: error.message }),
     };
   }
 }
@@ -190,7 +190,7 @@ export async function listJourneysHandler(event: APIGatewayEvent): Promise<Lambd
     let journeys = Array.from(journeyTable.values());
 
     if (status) {
-      journeys = journeys.filter(j => j.status === status);
+      journeys = journeys.filter((j) => j.status === status);
     }
 
     return {
@@ -198,14 +198,14 @@ export async function listJourneysHandler(event: APIGatewayEvent): Promise<Lambd
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         count: journeys.length,
-        journeys
-      })
+        journeys,
+      }),
     };
   } catch (error: any) {
     console.error('[Lambda:listJourneys] Error:', error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: error.message })
+      body: JSON.stringify({ error: error.message }),
     };
   }
 }
@@ -221,12 +221,12 @@ export async function getJourneyLogsHandler(event: APIGatewayEvent): Promise<Lam
     if (!journeyId) {
       return {
         statusCode: 400,
-        body: JSON.stringify({ error: 'Missing journey ID' })
+        body: JSON.stringify({ error: 'Missing journey ID' }),
       };
     }
 
     const logs = journeyLogs
-      .filter(log => log.journeyId === journeyId)
+      .filter((log) => log.journeyId === journeyId)
       .sort((a, b) => a.timestamp - b.timestamp);
 
     return {
@@ -235,14 +235,14 @@ export async function getJourneyLogsHandler(event: APIGatewayEvent): Promise<Lam
       body: JSON.stringify({
         journeyId,
         logCount: logs.length,
-        logs
-      })
+        logs,
+      }),
     };
   } catch (error: any) {
     console.error('[Lambda:getJourneyLogs] Error:', error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: error.message })
+      body: JSON.stringify({ error: error.message }),
     };
   }
 }
@@ -279,7 +279,7 @@ export async function mockAPIGateway(event: APIGatewayEvent): Promise<LambdaResp
   // 404 Not Found
   return {
     statusCode: 404,
-    body: JSON.stringify({ error: 'Route not found' })
+    body: JSON.stringify({ error: 'Route not found' }),
   };
 }
 
@@ -290,5 +290,5 @@ export const mockAWSState = {
   clearAll: () => {
     journeyTable.clear();
     journeyLogs.length = 0;
-  }
+  },
 };

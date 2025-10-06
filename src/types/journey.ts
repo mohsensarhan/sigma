@@ -15,11 +15,15 @@ export interface Journey {
   type: 'general' | 'location-fixed' | 'program-fixed';
   metadata: {
     governorate?: string;
+    governorateId?: string;
     program?: string;
+    programId?: string;
     familyId?: string;
     familyProfile?: string;
+    donorId?: string;
     donorName?: string;
     donorPhone?: string;
+    donorEmail?: string;
     amount?: number;
   };
 }

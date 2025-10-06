@@ -1,0 +1,101 @@
+{
+  "timestamp": "2025-10-05T19:03:16.270Z",
+  "flow": "Correct User Journey",
+  "steps": [
+    {
+      "name": "01-donors-page",
+      "description": "Donors page with DONATE buttons",
+      "screenshot": "./test-results/correct-production-flow/01-donors-page.png"
+    },
+    {
+      "name": "02-donation-triggered",
+      "description": "After clicking DONATE button",
+      "screenshot": "./test-results/correct-production-flow/02-donation-triggered.png"
+    },
+    {
+      "name": "03-sms-inbox",
+      "description": "SMS inbox showing messages",
+      "screenshot": "./test-results/correct-production-flow/03-sms-inbox.png"
+    },
+    {
+      "name": "05-progression-5s",
+      "description": "Journey progression at 5s",
+      "screenshot": "./test-results/correct-production-flow/05-progression-5s.png"
+    },
+    {
+      "name": "05-progression-10s",
+      "description": "Journey progression at 10s",
+      "screenshot": "./test-results/correct-production-flow/05-progression-10s.png"
+    },
+    {
+      "name": "05-progression-15s",
+      "description": "Journey progression at 15s",
+      "screenshot": "./test-results/correct-production-flow/05-progression-15s.png"
+    },
+    {
+      "name": "05-progression-20s",
+      "description": "Journey progression at 20s",
+      "screenshot": "./test-results/correct-production-flow/05-progression-20s.png"
+    },
+    {
+      "name": "05-progression-25s",
+      "description": "Journey progression at 25s",
+      "screenshot": "./test-results/correct-production-flow/05-progression-25s.png"
+    },
+    {
+      "name": "05-progression-30s",
+      "description": "Journey progression at 30s",
+      "screenshot": "./test-results/correct-production-flow/05-progression-30s.png"
+    }
+  ],
+  "validations": [
+    {
+      "name": "Donors Page Loaded",
+      "passed": true,
+      "details": {}
+    },
+    {
+      "name": "Donor Cards Display",
+      "passed": true,
+      "details": {
+        "count": 5
+      }
+    },
+    {
+      "name": "Journey ID Extracted",
+      "passed": false,
+      "details": {}
+    },
+    {
+      "name": "SMS Displays in Inbox",
+      "passed": false,
+      "details": {
+        "count": 0
+      }
+    },
+    {
+      "name": "Journey Reached Stage 2",
+      "passed": false,
+      "details": {}
+    },
+    {
+      "name": "Journey Reached Stage 3",
+      "passed": false,
+      "details": {}
+    },
+    {
+      "name": "Journey Reached Stage 4",
+      "passed": false,
+      "details": {}
+    },
+    {
+      "name": "Journey Reached Stage 5",
+      "passed": false,
+      "details": {}
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 6
+  }
+}

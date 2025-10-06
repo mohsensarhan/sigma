@@ -20,12 +20,20 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     autoRefreshToken: true, // Auto-refresh tokens for seamless experience
     detectSessionInUrl: true, // Handle email confirmation links
   },
+  db: {
+    schema: 'public', // Explicitly set schema
+  },
+  global: {
+    headers: {
+      'x-client-info': 'trupath-v2', // Custom client identifier
+    },
+  },
 });
 
 // Test connection (only in development)
 if (import.meta.env.DEV) {
   supabase
-    .from('anchors')
+    .from('journeys')
     .select('count', { count: 'exact', head: true })
     .then(({ error }) => {
       if (error) {

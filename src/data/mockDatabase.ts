@@ -6,13 +6,7 @@
  * No business logic here - pure data only.
  */
 
-import type {
-  Anchor,
-  Governorate,
-  Village,
-  Program,
-  Family,
-} from '../types/database';
+import type { Anchor, Governorate, Village, Program, Family } from '../types/database';
 
 // ============================================================================
 // FIXED ANCHORS (Always same for all journeys)
@@ -138,85 +132,340 @@ export const PROGRAMS: Program[] = [
 
 export const FAMILIES: Family[] = [
   // Minya - Idamo
-  { id: 'f_001', programId: 'ramadan', villageId: 'v_minya_1', profile: '3 children, single mother, disabled woman 55' },
-  { id: 'f_002', programId: 'school', villageId: 'v_minya_1', profile: '4 children, elderly grandmother 68' },
-  { id: 'f_003', programId: 'winter', villageId: 'v_minya_1', profile: '2 children, single father, widow 42' },
-  { id: 'f_004', programId: 'emergency', villageId: 'v_minya_1', profile: '5 children, unemployed father, sick mother' },
-  { id: 'f_005', programId: 'nutrition', villageId: 'v_minya_1', profile: '1 infant, 2 toddlers, single mother 29' },
-  { id: 'f_006', programId: 'elderly', villageId: 'v_minya_1', profile: 'elderly couple 72, no income' },
+  {
+    id: 'f_001',
+    programId: 'ramadan',
+    villageId: 'v_minya_1',
+    profile: '3 children, single mother, disabled woman 55',
+  },
+  {
+    id: 'f_002',
+    programId: 'school',
+    villageId: 'v_minya_1',
+    profile: '4 children, elderly grandmother 68',
+  },
+  {
+    id: 'f_003',
+    programId: 'winter',
+    villageId: 'v_minya_1',
+    profile: '2 children, single father, widow 42',
+  },
+  {
+    id: 'f_004',
+    programId: 'emergency',
+    villageId: 'v_minya_1',
+    profile: '5 children, unemployed father, sick mother',
+  },
+  {
+    id: 'f_005',
+    programId: 'nutrition',
+    villageId: 'v_minya_1',
+    profile: '1 infant, 2 toddlers, single mother 29',
+  },
+  {
+    id: 'f_006',
+    programId: 'elderly',
+    villageId: 'v_minya_1',
+    profile: 'elderly couple 72, no income',
+  },
 
   // Minya - Samalut
-  { id: 'f_007', programId: 'ramadan', villageId: 'v_minya_2', profile: '6 children, disabled father 48' },
-  { id: 'f_008', programId: 'school', villageId: 'v_minya_2', profile: '3 school-age children, widow 39' },
-  { id: 'f_009', programId: 'winter', villageId: 'v_minya_2', profile: '2 children, elderly parents 65' },
-  { id: 'f_010', programId: 'emergency', villageId: 'v_minya_2', profile: '4 children, recently displaced family' },
-  { id: 'f_011', programId: 'nutrition', villageId: 'v_minya_2', profile: 'twins under 2, malnourished mother 26' },
+  {
+    id: 'f_007',
+    programId: 'ramadan',
+    villageId: 'v_minya_2',
+    profile: '6 children, disabled father 48',
+  },
+  {
+    id: 'f_008',
+    programId: 'school',
+    villageId: 'v_minya_2',
+    profile: '3 school-age children, widow 39',
+  },
+  {
+    id: 'f_009',
+    programId: 'winter',
+    villageId: 'v_minya_2',
+    profile: '2 children, elderly parents 65',
+  },
+  {
+    id: 'f_010',
+    programId: 'emergency',
+    villageId: 'v_minya_2',
+    profile: '4 children, recently displaced family',
+  },
+  {
+    id: 'f_011',
+    programId: 'nutrition',
+    villageId: 'v_minya_2',
+    profile: 'twins under 2, malnourished mother 26',
+  },
 
   // Minya - Beni Mazar
-  { id: 'f_012', programId: 'ramadan', villageId: 'v_minya_3', profile: '4 children, chronically ill father 51' },
-  { id: 'f_013', programId: 'school', villageId: 'v_minya_3', profile: '5 school children, single mother 44' },
-  { id: 'f_014', programId: 'elderly', villageId: 'v_minya_3', profile: 'disabled elderly woman 81, lives alone' },
+  {
+    id: 'f_012',
+    programId: 'ramadan',
+    villageId: 'v_minya_3',
+    profile: '4 children, chronically ill father 51',
+  },
+  {
+    id: 'f_013',
+    programId: 'school',
+    villageId: 'v_minya_3',
+    profile: '5 school children, single mother 44',
+  },
+  {
+    id: 'f_014',
+    programId: 'elderly',
+    villageId: 'v_minya_3',
+    profile: 'disabled elderly woman 81, lives alone',
+  },
 
   // Aswan - Kom Ombo
   { id: 'f_015', programId: 'ramadan', villageId: 'v_aswan_1', profile: '3 children, widow 37' },
-  { id: 'f_016', programId: 'school', villageId: 'v_aswan_1', profile: '2 children, disabled mother 33' },
-  { id: 'f_017', programId: 'winter', villageId: 'v_aswan_1', profile: '4 children, seasonal worker father' },
-  { id: 'f_018', programId: 'emergency', villageId: 'v_aswan_1', profile: '3 children, fire victim family' },
-  { id: 'f_019', programId: 'nutrition', villageId: 'v_aswan_1', profile: '1 newborn, 3 under-5 children' },
+  {
+    id: 'f_016',
+    programId: 'school',
+    villageId: 'v_aswan_1',
+    profile: '2 children, disabled mother 33',
+  },
+  {
+    id: 'f_017',
+    programId: 'winter',
+    villageId: 'v_aswan_1',
+    profile: '4 children, seasonal worker father',
+  },
+  {
+    id: 'f_018',
+    programId: 'emergency',
+    villageId: 'v_aswan_1',
+    profile: '3 children, fire victim family',
+  },
+  {
+    id: 'f_019',
+    programId: 'nutrition',
+    villageId: 'v_aswan_1',
+    profile: '1 newborn, 3 under-5 children',
+  },
 
   // Aswan - Edfu
-  { id: 'f_020', programId: 'ramadan', villageId: 'v_aswan_2', profile: '5 children, unemployed parents' },
-  { id: 'f_021', programId: 'school', villageId: 'v_aswan_2', profile: '4 school-age, single father 46' },
-  { id: 'f_022', programId: 'winter', villageId: 'v_aswan_2', profile: '2 children, elderly caretaker 70' },
-  { id: 'f_023', programId: 'elderly', villageId: 'v_aswan_2', profile: 'elderly man 78, diabetic' },
+  {
+    id: 'f_020',
+    programId: 'ramadan',
+    villageId: 'v_aswan_2',
+    profile: '5 children, unemployed parents',
+  },
+  {
+    id: 'f_021',
+    programId: 'school',
+    villageId: 'v_aswan_2',
+    profile: '4 school-age, single father 46',
+  },
+  {
+    id: 'f_022',
+    programId: 'winter',
+    villageId: 'v_aswan_2',
+    profile: '2 children, elderly caretaker 70',
+  },
+  {
+    id: 'f_023',
+    programId: 'elderly',
+    villageId: 'v_aswan_2',
+    profile: 'elderly man 78, diabetic',
+  },
 
   // Aswan - Daraw
-  { id: 'f_024', programId: 'ramadan', villageId: 'v_aswan_3', profile: '7 children, large family in poverty' },
-  { id: 'f_025', programId: 'emergency', villageId: 'v_aswan_3', profile: '3 children, flood-affected family' },
-  { id: 'f_026', programId: 'nutrition', villageId: 'v_aswan_3', profile: '2 malnourished children, sick mother 31' },
+  {
+    id: 'f_024',
+    programId: 'ramadan',
+    villageId: 'v_aswan_3',
+    profile: '7 children, large family in poverty',
+  },
+  {
+    id: 'f_025',
+    programId: 'emergency',
+    villageId: 'v_aswan_3',
+    profile: '3 children, flood-affected family',
+  },
+  {
+    id: 'f_026',
+    programId: 'nutrition',
+    villageId: 'v_aswan_3',
+    profile: '2 malnourished children, sick mother 31',
+  },
 
   // Luxor - Armant
   { id: 'f_027', programId: 'ramadan', villageId: 'v_luxor_1', profile: '4 children, widow 41' },
-  { id: 'f_028', programId: 'school', villageId: 'v_luxor_1', profile: '3 children, disabled father 52' },
-  { id: 'f_029', programId: 'winter', villageId: 'v_luxor_1', profile: '2 children, elderly grandmother caring' },
-  { id: 'f_030', programId: 'emergency', villageId: 'v_luxor_1', profile: '5 children, medical crisis family' },
-  { id: 'f_031', programId: 'nutrition', villageId: 'v_luxor_1', profile: '1 infant, 1 toddler, young mother 23' },
+  {
+    id: 'f_028',
+    programId: 'school',
+    villageId: 'v_luxor_1',
+    profile: '3 children, disabled father 52',
+  },
+  {
+    id: 'f_029',
+    programId: 'winter',
+    villageId: 'v_luxor_1',
+    profile: '2 children, elderly grandmother caring',
+  },
+  {
+    id: 'f_030',
+    programId: 'emergency',
+    villageId: 'v_luxor_1',
+    profile: '5 children, medical crisis family',
+  },
+  {
+    id: 'f_031',
+    programId: 'nutrition',
+    villageId: 'v_luxor_1',
+    profile: '1 infant, 1 toddler, young mother 23',
+  },
 
   // Luxor - Esna
-  { id: 'f_032', programId: 'ramadan', villageId: 'v_luxor_2', profile: '6 children, unemployed father 49' },
-  { id: 'f_033', programId: 'school', villageId: 'v_luxor_2', profile: '4 students, single mother 38' },
-  { id: 'f_034', programId: 'elderly', villageId: 'v_luxor_2', profile: 'elderly couple 75, both ill' },
+  {
+    id: 'f_032',
+    programId: 'ramadan',
+    villageId: 'v_luxor_2',
+    profile: '6 children, unemployed father 49',
+  },
+  {
+    id: 'f_033',
+    programId: 'school',
+    villageId: 'v_luxor_2',
+    profile: '4 students, single mother 38',
+  },
+  {
+    id: 'f_034',
+    programId: 'elderly',
+    villageId: 'v_luxor_2',
+    profile: 'elderly couple 75, both ill',
+  },
 
   // Sohag - Akhmim
-  { id: 'f_035', programId: 'ramadan', villageId: 'v_sohag_1', profile: '3 children, disabled woman 43' },
-  { id: 'f_036', programId: 'school', villageId: 'v_sohag_1', profile: '5 school children, widow 47' },
-  { id: 'f_037', programId: 'winter', villageId: 'v_sohag_1', profile: '2 children, chronically ill mother 36' },
-  { id: 'f_038', programId: 'emergency', villageId: 'v_sohag_1', profile: '4 children, evicted family' },
-  { id: 'f_039', programId: 'nutrition', villageId: 'v_sohag_1', profile: 'triplets under 1, struggling mother 28' },
+  {
+    id: 'f_035',
+    programId: 'ramadan',
+    villageId: 'v_sohag_1',
+    profile: '3 children, disabled woman 43',
+  },
+  {
+    id: 'f_036',
+    programId: 'school',
+    villageId: 'v_sohag_1',
+    profile: '5 school children, widow 47',
+  },
+  {
+    id: 'f_037',
+    programId: 'winter',
+    villageId: 'v_sohag_1',
+    profile: '2 children, chronically ill mother 36',
+  },
+  {
+    id: 'f_038',
+    programId: 'emergency',
+    villageId: 'v_sohag_1',
+    profile: '4 children, evicted family',
+  },
+  {
+    id: 'f_039',
+    programId: 'nutrition',
+    villageId: 'v_sohag_1',
+    profile: 'triplets under 1, struggling mother 28',
+  },
 
   // Sohag - Girga
-  { id: 'f_040', programId: 'ramadan', villageId: 'v_sohag_2', profile: '4 children, single father 44' },
-  { id: 'f_041', programId: 'school', villageId: 'v_sohag_2', profile: '3 children, elderly parents 68' },
-  { id: 'f_042', programId: 'winter', villageId: 'v_sohag_2', profile: '5 children, poor housing family' },
+  {
+    id: 'f_040',
+    programId: 'ramadan',
+    villageId: 'v_sohag_2',
+    profile: '4 children, single father 44',
+  },
+  {
+    id: 'f_041',
+    programId: 'school',
+    villageId: 'v_sohag_2',
+    profile: '3 children, elderly parents 68',
+  },
+  {
+    id: 'f_042',
+    programId: 'winter',
+    villageId: 'v_sohag_2',
+    profile: '5 children, poor housing family',
+  },
   { id: 'f_043', programId: 'elderly', villageId: 'v_sohag_2', profile: 'disabled elderly man 82' },
 
   // Sohag - El Balyana
   { id: 'f_044', programId: 'ramadan', villageId: 'v_sohag_3', profile: '2 children, widow 34' },
-  { id: 'f_045', programId: 'emergency', villageId: 'v_sohag_3', profile: '3 children, accident victim father' },
-  { id: 'f_046', programId: 'nutrition', villageId: 'v_sohag_3', profile: '2 undernourished children, sick mother 32' },
+  {
+    id: 'f_045',
+    programId: 'emergency',
+    villageId: 'v_sohag_3',
+    profile: '3 children, accident victim father',
+  },
+  {
+    id: 'f_046',
+    programId: 'nutrition',
+    villageId: 'v_sohag_3',
+    profile: '2 undernourished children, sick mother 32',
+  },
 
   // Qena - Nag Hammadi
-  { id: 'f_047', programId: 'ramadan', villageId: 'v_qena_1', profile: '5 children, unemployed father 50' },
-  { id: 'f_048', programId: 'school', villageId: 'v_qena_1', profile: '4 school-age, disabled mother 40' },
-  { id: 'f_049', programId: 'winter', villageId: 'v_qena_1', profile: '3 children, elderly caretaker 73' },
-  { id: 'f_050', programId: 'emergency', villageId: 'v_qena_1', profile: '2 children, house collapse victims' },
-  { id: 'f_051', programId: 'nutrition', villageId: 'v_qena_1', profile: '1 infant, 2 toddlers, young mother 24' },
+  {
+    id: 'f_047',
+    programId: 'ramadan',
+    villageId: 'v_qena_1',
+    profile: '5 children, unemployed father 50',
+  },
+  {
+    id: 'f_048',
+    programId: 'school',
+    villageId: 'v_qena_1',
+    profile: '4 school-age, disabled mother 40',
+  },
+  {
+    id: 'f_049',
+    programId: 'winter',
+    villageId: 'v_qena_1',
+    profile: '3 children, elderly caretaker 73',
+  },
+  {
+    id: 'f_050',
+    programId: 'emergency',
+    villageId: 'v_qena_1',
+    profile: '2 children, house collapse victims',
+  },
+  {
+    id: 'f_051',
+    programId: 'nutrition',
+    villageId: 'v_qena_1',
+    profile: '1 infant, 2 toddlers, young mother 24',
+  },
 
   // Qena - Qus
-  { id: 'f_052', programId: 'ramadan', villageId: 'v_qena_2', profile: '6 children, large poor family' },
-  { id: 'f_053', programId: 'school', villageId: 'v_qena_2', profile: '3 students, single father 48' },
-  { id: 'f_054', programId: 'winter', villageId: 'v_qena_2', profile: '4 children, seasonal income family' },
-  { id: 'f_055', programId: 'elderly', villageId: 'v_qena_2', profile: 'elderly woman 79, no family support' },
+  {
+    id: 'f_052',
+    programId: 'ramadan',
+    villageId: 'v_qena_2',
+    profile: '6 children, large poor family',
+  },
+  {
+    id: 'f_053',
+    programId: 'school',
+    villageId: 'v_qena_2',
+    profile: '3 students, single father 48',
+  },
+  {
+    id: 'f_054',
+    programId: 'winter',
+    villageId: 'v_qena_2',
+    profile: '4 children, seasonal income family',
+  },
+  {
+    id: 'f_055',
+    programId: 'elderly',
+    villageId: 'v_qena_2',
+    profile: 'elderly woman 79, no family support',
+  },
 ];
 
 // ============================================================================
